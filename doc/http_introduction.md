@@ -365,29 +365,6 @@ type=consult
 }
 ```
 
-## 19.按关键字查询公众号
-```
-接口：/newapi/robot/search_robot.qunar
-请求方式：POST
- 
-参数：
-{"type":"1", "keyword":"内网"}
-  
-返回值：
-{
-    "ret": true,
-    "errcode": 0,
-    "errmsg": "",
-    "data": [
-        {
-            "rbt_name": "xxx",
-            "rbt_body": "{\"robotDesc\":\"xxx\",\"robotEnName\":\"xxx\",\"robotCnName\":\"xxxx\"}",
-            "rbt_ver": "1"
-        }
-    ]
-}
-```
-
 ## 13.获取系统时间
 ```
 接口：/newapi/base/getservertime.qunar
