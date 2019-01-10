@@ -12,14 +12,7 @@
  - [10.获取群信息](#10.获取群信息)
  - [11.获取新增群信息](#11.获取新增群信息)
  - [12.快捷回复消息接口](#12.快捷回复消息接口)
- - [13.获取订阅的公账号信息](#13.获取订阅的公账号信息)
- - [14.获取推荐公账号列表](#14.获取推荐公账号列表)
- - [15.添加公众号](#15.添加公众号)
- - [16.添加用户订阅公众号信息](#16.添加用户订阅公众号信息)
- - [17.获取用户订阅的公众号信息](#17.获取用户订阅的公众号信息)
- - [18.删除用户订阅的公众号信息](#18.删除用户订阅的公众号信息)
- - [19.按关键字查询公众号](#19.按关键字查询公众号)
- - [20.获取系统时间](#20.获取系统时间)
+ - [13.获取系统时间](#20.获取系统时间)
 ## 1.获取用户勋章列表
 ```
 接口：/newapi/user/get_user_decoration.qunar
@@ -372,140 +365,6 @@ type=consult
 }
 ```
 
-## 13.获取订阅的公账号信息
-```
-接口：/newapi/robot/get_robot_info.qunar
-请求方式：POST
-参数：
-[
- {"robot_name":"xxx","version":2}
-]
-
-返回值：
-{
-    "ret": true,
-    "errcode": 0,
-    "errmsg": "",
-    "data": [
-        {
-            "rbt_name": "xxx",
-            "rbt_body": "{\"robotDesc\":\"test1\",\"robotEnName\":\"xxx\",\"actionlist\":[],\"robotCnName\":\"test_rbt1\"}",
-            "rbt_ver": "2"
-        }
-    ]
-}
-```
-
-## 14.获取推荐公账号列表
-```
-接口：/newapi/robot/get_recommend_robot_info.qunar
-请求方式：POST
-参数：
-{
- "type":"1"   #必须字段
-}
-
-返回值：
-{
-    "ret": true,
-    "errcode": 0,
-    "errmsg": "",
-    "data": [
-        {
-            "rbt_name": "xx",
-            "rbt_body": "{\"robotDesc\":\"test1\",\"robotEnName\":\"xx\",\"actionlist\":[],\"robotCnName\":\"test_rbt1\"}",
-            "rbt_ver": "2"
-        }]
-}
-```
-
-## 15.添加公众号
-```
-接口：/newapi/robot/regist_robot.qunar
-请求方式：POST
-参数：
-{
- "robotEnName":"xxxxxx1",   #必须参数
- "robotCnName":"xxxx",      #必须参数
- "requestUrl":"xxx",        #必须参数
- "robotDesc":"xxx",         #必须参数
- "password":"xxxx"
-}
-
-返回值：
-{
-    "ret": true,
-    "errcode": 0,
-    "errmsg": "",
-    "data": null
-}
-```
-
-## 16.添加用户订阅公众号信息
-```
-接口：/newapi/robot/user_robot_pubsub.qunar
-请求方式：POST
- 
-参数：
-{
- "method":"add",
- "user":"xxxx",
- "rbt":"xxx",
-}
- 
- 
-返回值：
-{
-    "ret": true,
-    "errcode": 0,
-    "errmsg": "",
-    "data": ""
-}
-```
-
-## 17.获取用户订阅的公众号信息
-```
-接口：/newapi/robot/user_robot_pubsub.qunar
-请求方式：POST
-参数：
-{
-    "method":"get",
-    "user":"xxxx"
-}
-uhost可以不传， 如果不传就只按照user查询
-返回值：
-{
-    "ret": true,
-    "errcode": 0,
-    "errmsg": "",
-    "data": [
-        "xx",
-        "xx"
-    ]
-}
-```
-
-## 18. 删除用户订阅的公众号信息
-```
-接口：/newapi/robot/user_robot_pubsub.qunar
-请求方式：POST
- 
-参数：
-{
-    "method":"del",
-    "user":"xxxx",
-    "rbt":"xx"
-}
- 
-返回值：
-{
-    "ret": true,
-    "errcode": 0,
-    "errmsg": "",
-    "data": ""
-}
-```
-
 ## 19.按关键字查询公众号
 ```
 接口：/newapi/robot/search_robot.qunar
@@ -529,7 +388,7 @@ uhost可以不传， 如果不传就只按照user查询
 }
 ```
 
-## 20.获取系统时间
+## 13.获取系统时间
 ```
 接口：/newapi/base/getservertime.qunar
 请求方式：GET
