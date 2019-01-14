@@ -127,12 +127,12 @@
 接口：/newapi/profile/set_profile.qunar
 请求方式：POST
 参数：
-{
+[{
  "user":"xxxx",
  "domain":"domain1",
  "mood":"心情1",
  "url":"urld11"
-}
+}]
 返回值：
 {
     "ret": true,
