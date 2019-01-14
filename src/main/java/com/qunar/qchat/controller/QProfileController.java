@@ -8,6 +8,7 @@ import com.qunar.qchat.model.JsonResult;
 import com.qunar.qchat.model.request.GetProfileRequest;
 import com.qunar.qchat.model.result.SetProfileResult;
 import com.qunar.qchat.utils.JsonResultUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -66,41 +67,52 @@ public class QProfileController {
 
     /**
      * 设置用户信息.
-     * @param request GetProfileRequest
+     * @param requests GetProfileRequest
      * @return JsonResult<?>
      * */
     @RequestMapping(value = "/set_profile.qunar", method = RequestMethod.POST)
-    public JsonResult<?> SetProfile(@RequestBody GetProfileRequest request) {
+    public JsonResult<?> SetProfile(@RequestBody List<GetProfileRequest> requests) {
         try {
 
-            if(StringUtils.isBlank(request.getUser())
-                    || StringUtils.isBlank(request.getDomain())) {
+            if(CollectionUtils.isEmpty(requests)) {
                 return JsonResultUtils.fail(1, QChatConstant.PARAMETER_ERROR);
             }
 
-            //不支持qchat调用
-            if(QChatConstant.ENVIRONMENT_QCHAT.equals(Config.CURRENT_ENV)) {
-                return JsonResultUtils.fail(1, "不支持的操作");
+            int effectiveRow = 0;
+            for(GetProfileRequest request : requests) {
+                if (StringUtils.isBlank(request.getUser())
+                        || StringUtils.isBlank(request.getDomain())) {
+                    return JsonResultUtils.fail(1, QChatConstant.PARAMETER_ERROR);
+                }
+
+                //不支持qchat调用
+                if (QChatConstant.ENVIRONMENT_QCHAT.equals(Config.CURRENT_ENV)) {
+                    return JsonResultUtils.fail(1, "不支持的操作");
+                }
+
+                Profile profileList = iProfileDao.selectProfileInfoByUserAndHost(request.getUser(), request.getDomain());
+
+                if (Objects.isNull(profileList)) {
+                    return JsonResultUtils.fail(1, "user:" + request.getUser() +
+                            ", host: " + request.getDomain() + "数据不存在");
+                }
+
+                Profile newProfile = iProfileDao.updateProfileInfo(request.getUser(), request.getDomain(),
+                        request.getUrl(), request.getMood());
+
+                SetProfileResult result = SetProfileResult.builder()
+                        .user(newProfile.getUsername())
+                        .domain(newProfile.getHost())
+                        .url(newProfile.getUrl())
+                        .mood(newProfile.getMood())
+                        .version(String.valueOf(newProfile.getVersion())).build();
+                effectiveRow ++;
             }
 
-            Profile profileList = iProfileDao.selectProfileInfoByUserAndHost(request.getUser(), request.getDomain());
-
-            if(Objects.isNull(profileList)) {
-                return JsonResultUtils.fail(1, "user:" + request.getUser() +
-                        ", host: " + request.getDomain() +"数据不存在");
+            if(effectiveRow == requests.size()) {
+                return JsonResultUtils.success(effectiveRow);
             }
-
-            Profile newProfile = iProfileDao.updateProfileInfo(request.getUser(), request.getDomain(),
-                                    request.getUrl(), request.getMood());
-
-            SetProfileResult result = SetProfileResult.builder()
-                                            .user(newProfile.getUsername())
-                                            .domain(newProfile.getHost())
-                                            .url(newProfile.getUrl())
-                                            .mood(newProfile.getMood())
-                                            .version(String.valueOf(newProfile.getVersion())).build();
-
-            return JsonResultUtils.success(result);
+            return JsonResultUtils.fail(1, "更新用户信息失败");
 
         } catch (Exception e) {
             LOGGER.error("catch error : {}", ExceptionUtils.getStackTrace(e));

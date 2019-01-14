@@ -1,5 +1,6 @@
 package com.qunar.qchat.controller;
 
+import com.qunar.qchat.constants.Config;
 import com.qunar.qchat.dao.IMucInfoDao;
 import com.qunar.qchat.dao.model.MucIncrementInfo;
 import com.qunar.qchat.dao.model.MucInfoModel;
@@ -10,6 +11,7 @@ import com.qunar.qchat.model.request.UpdateMucNickRequest;
 import com.qunar.qchat.model.result.GetMucVcardResult;
 import com.qunar.qchat.model.result.UpdateMucNickResult;
 import com.qunar.qchat.utils.CookieUtils;
+import com.qunar.qchat.utils.HttpClientUtils;
 import com.qunar.qchat.utils.JsonResultUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -120,6 +122,10 @@ public class QMucInfoController {
                     result.setMuc_desc(newMucInfo.getMucDesc());
                 }
                 resultList.add(result);
+
+                //发送通知
+                HttpClientUtils.get(Config.UPDATE_MUC_VCARD_MSG_URL + "?muc_name=" + result.getMuc_name());
+                LOGGER.info("发送群信息变更通知成功，群ID : {}", request.getMuc_name());
             }
             return JsonResultUtils.success(resultList);
         }catch (Exception ex) {
