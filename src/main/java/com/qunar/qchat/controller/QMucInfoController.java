@@ -98,10 +98,21 @@ public class QMucInfoController {
             }
 
 
-            List<MucInfoModel> mucInfoModels = iMucInfoDao.selectMucInfoByIds(requests.stream()
-                     .map(request -> request.getMuc_name()).collect(Collectors.toList()));
-            if(CollectionUtils.isEmpty(mucInfoModels) || mucInfoModels.size() != requests.size()) {
-                return JsonResultUtils.fail(1, "群不存在");
+            /*List<MucInfoModel> mucInfoModels = iMucInfoDao.selectMucInfoByIds(requests.stream()
+                     .map(request -> request.getMuc_name()).collect(Collectors.toList()));*/
+
+            //fix bug
+            for(UpdateMucNickRequest request : requests) {
+                String tempMucName = "";
+                if (request.getMuc_name().indexOf("@") == -1) {
+                    tempMucName = request.getMuc_name();
+                } else {
+                    tempMucName = request.getMuc_name().substring(0, request.getMuc_name().indexOf("@"));
+                }
+                int exitCount = iMucInfoDao.checkMucExist(tempMucName);
+                if(exitCount == 0) {
+                    return JsonResultUtils.fail(1, "群" + request.getMuc_name() + "不存在");
+                }
             }
 
             List<UpdateMucNickResult> resultList = new ArrayList<>();

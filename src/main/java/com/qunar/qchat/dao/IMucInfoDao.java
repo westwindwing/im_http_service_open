@@ -20,4 +20,6 @@ public interface IMucInfoDao {
 
     List<MucInfoModel> selectMucInfoByIds(@Param("ids") List<String> ids);
 
+
+    int checkMucExist(@Param("mucName") String mucName);
 }
