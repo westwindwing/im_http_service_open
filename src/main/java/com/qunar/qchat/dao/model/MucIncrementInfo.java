@@ -3,7 +3,7 @@ package com.qunar.qchat.dao.model;
 public class MucIncrementInfo {
     private String muc_name;
     private String domain;
-    private String t;
+    private Long t;
     private int registed_flag;
 
     public String getMuc_name() {
@@ -22,12 +22,12 @@ public class MucIncrementInfo {
         this.domain = domain;
     }
 
-    public String getT() {
-        return t;
+    public void setT(Long t) {
+        this.t = t;
     }
 
-    public void setT(String t) {
-        this.t = t;
+    public Long getT() {
+        return t;
     }
 
     public int getRegisted_flag() {
