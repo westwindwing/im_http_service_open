@@ -66,7 +66,7 @@ public class QMucInfoController {
                 Map<String, Object> map = new HashMap<>();
                 map.put("M", item.getMuc_name());
                 map.put("D", item.getDomain());
-                map.put("T", item.getT());
+                map.put("T", String.valueOf(item.getT()));
                 map.put("F", item.getRegisted_flag());
                 result.add(map);
             });
