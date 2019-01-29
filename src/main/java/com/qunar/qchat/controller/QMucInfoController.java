@@ -69,6 +69,7 @@ public class QMucInfoController {
 
             List<MucIncrementInfo> mucIncrementInfoList = iMucInfoDao.selectMucIncrementInfoNew(paramRequest.getU(), paramRequest.getD(), strTime);
 
+
             List<Map<String, Object>> result = new ArrayList<>();
             mucIncrementInfoList.stream().forEach(item -> {
                 Map<String, Object> map = new HashMap<>();
