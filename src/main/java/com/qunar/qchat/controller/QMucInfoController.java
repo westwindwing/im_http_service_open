@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -59,7 +60,14 @@ public class QMucInfoController {
                 Map<String, Object> cookie = CookieUtils.getUserbyCookie(httpRequest);
                 paramRequest.setD(cookie.get("d").toString());
             }
-            List<MucIncrementInfo> mucIncrementInfoList = iMucInfoDao.selectMucIncrementInfo(paramRequest.getU(), paramRequest.getD(), paramRequest.getT());
+
+            /**
+             * 解决pg to_timestamp 只接受秒数的问题.
+             * */
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS");
+            String strTime = sdf.format(paramRequest.getT());
+
+            List<MucIncrementInfo> mucIncrementInfoList = iMucInfoDao.selectMucIncrementInfoNew(paramRequest.getU(), paramRequest.getD(), strTime);
 
             List<Map<String, Object>> result = new ArrayList<>();
             mucIncrementInfoList.stream().forEach(item -> {
