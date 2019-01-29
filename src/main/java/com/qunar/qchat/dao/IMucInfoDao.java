@@ -14,10 +14,17 @@ public interface IMucInfoDao {
             @Param("t") Double t
     );
 
+    List<MucIncrementInfo> selectMucIncrementInfoNew(
+            @Param("u") String u,
+            @Param("d") String d,
+            @Param("t") String t);
+
 
     MucInfoModel updateMucInfo(MucInfoModel mucInfo);
 
 
     List<MucInfoModel> selectMucInfoByIds(@Param("ids") List<String> ids);
 
+
+    int checkMucExist(@Param("mucName") String mucName);
 }

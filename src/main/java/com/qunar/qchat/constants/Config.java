@@ -32,6 +32,7 @@ public class Config {
     public static final String LOGIN_VALIDATE_URL = getProperty("login_validate_url");
 
     public static final String PUSH_MESSAGE_NOTICE_URL = getProperty("push_message_notice_url");
+    public static final String UPDATE_MUC_VCARD_MSG_URL = getProperty("update_muc_vcard_msg_url");
 
     public static final int TOKEN_VALID_TIME = getIntProperty("token.valid.time", 7);
     public static final String COOKIE_DOMAIN = getProperty("cookie.domain");

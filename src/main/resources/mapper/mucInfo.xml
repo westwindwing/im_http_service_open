@@ -23,6 +23,12 @@
         from user_register_mucs where created_at > to_timestamp(#{t}) and username = #{u} and host = #{d};
     </select>
 
+    <select id="selectMucIncrementInfoNew" resultType="com.qunar.qchat.dao.model.MucIncrementInfo">
+        select muc_name,domain,(extract(epoch from date_trunc('MS', created_at))*1000 - 8*3600*1000) as t,registed_flag
+        from user_register_mucs where created_at > to_timestamp(#{t},'YYYY-MM-DD hh24:MI:ss ms')
+        and username = #{u} and host = #{d};
+    </select>
+
     <select id="updateMucInfo" parameterType="com.qunar.qchat.dao.model.MucInfoModel" resultMap="mucIncrementInfoResultMap">
        update muc_vcard_info
          <set>
@@ -42,6 +48,10 @@
         select <include refid="column_all"/> from muc_vcard_info where muc_name in
           <foreach collection="ids" separator="," item="id" open="(" close=")">#{id}</foreach>
 
+    </select>
+
+    <select id="checkMucExist" resultType="int">
+        select count(*) from muc_room where name = #{mucName}
     </select>
 
 </mapper>

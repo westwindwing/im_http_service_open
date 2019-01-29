@@ -1,5 +1,6 @@
 package com.qunar.qchat.controller;
 
+import com.qunar.qchat.constants.Config;
 import com.qunar.qchat.dao.IMucInfoDao;
 import com.qunar.qchat.dao.model.MucIncrementInfo;
 import com.qunar.qchat.dao.model.MucInfoModel;
@@ -10,6 +11,7 @@ import com.qunar.qchat.model.request.UpdateMucNickRequest;
 import com.qunar.qchat.model.result.GetMucVcardResult;
 import com.qunar.qchat.model.result.UpdateMucNickResult;
 import com.qunar.qchat.utils.CookieUtils;
+import com.qunar.qchat.utils.HttpClientUtils;
 import com.qunar.qchat.utils.JsonResultUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -57,14 +60,22 @@ public class QMucInfoController {
                 Map<String, Object> cookie = CookieUtils.getUserbyCookie(httpRequest);
                 paramRequest.setD(cookie.get("d").toString());
             }
-            List<MucIncrementInfo> mucIncrementInfoList = iMucInfoDao.selectMucIncrementInfo(paramRequest.getU(), paramRequest.getD(), paramRequest.getT());
+
+            /**
+             * 解决pg to_timestamp 只接受秒数的问题.
+             * */
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS");
+            String strTime = sdf.format(paramRequest.getT());
+
+            List<MucIncrementInfo> mucIncrementInfoList = iMucInfoDao.selectMucIncrementInfoNew(paramRequest.getU(), paramRequest.getD(), strTime);
+
 
             List<Map<String, Object>> result = new ArrayList<>();
             mucIncrementInfoList.stream().forEach(item -> {
                 Map<String, Object> map = new HashMap<>();
                 map.put("M", item.getMuc_name());
                 map.put("D", item.getDomain());
-                map.put("T", item.getT());
+                map.put("T", String.valueOf(item.getT()));
                 map.put("F", item.getRegisted_flag());
                 result.add(map);
             });
@@ -96,10 +107,21 @@ public class QMucInfoController {
             }
 
 
-            List<MucInfoModel> mucInfoModels = iMucInfoDao.selectMucInfoByIds(requests.stream()
-                     .map(request -> request.getMuc_name()).collect(Collectors.toList()));
-            if(CollectionUtils.isEmpty(mucInfoModels) || mucInfoModels.size() != requests.size()) {
-                return JsonResultUtils.fail(1, "群不存在");
+            /*List<MucInfoModel> mucInfoModels = iMucInfoDao.selectMucInfoByIds(requests.stream()
+                     .map(request -> request.getMuc_name()).collect(Collectors.toList()));*/
+
+            //fix bug
+            for(UpdateMucNickRequest request : requests) {
+                String tempMucName = "";
+                if (request.getMuc_name().indexOf("@") == -1) {
+                    tempMucName = request.getMuc_name();
+                } else {
+                    tempMucName = request.getMuc_name().substring(0, request.getMuc_name().indexOf("@"));
+                }
+                int exitCount = iMucInfoDao.checkMucExist(tempMucName);
+                if(exitCount == 0) {
+                    return JsonResultUtils.fail(1, "群" + request.getMuc_name() + "不存在");
+                }
             }
 
             List<UpdateMucNickResult> resultList = new ArrayList<>();
@@ -120,6 +142,10 @@ public class QMucInfoController {
                     result.setMuc_desc(newMucInfo.getMucDesc());
                 }
                 resultList.add(result);
+
+                //发送通知
+                HttpClientUtils.get(Config.UPDATE_MUC_VCARD_MSG_URL + "?muc_name=" + result.getMuc_name());
+                LOGGER.info("发送群信息变更通知成功，群ID : {}", request.getMuc_name());
             }
             return JsonResultUtils.success(resultList);
         }catch (Exception ex) {
