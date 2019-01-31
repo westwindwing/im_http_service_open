@@ -79,6 +79,7 @@ public class QProfileController {
             }
 
             int effectiveRow = 0;
+            List<SetProfileResult> resultList = new ArrayList<>();
             for(GetProfileRequest request : requests) {
                 if (StringUtils.isBlank(request.getUser())
                         || StringUtils.isBlank(request.getDomain())) {
@@ -106,11 +107,12 @@ public class QProfileController {
                         .url(newProfile.getUrl())
                         .mood(newProfile.getMood())
                         .version(String.valueOf(newProfile.getVersion())).build();
+                resultList.add(result);
                 effectiveRow ++;
             }
 
             if(effectiveRow == requests.size()) {
-                return JsonResultUtils.success(effectiveRow);
+                return JsonResultUtils.success(resultList);
             }
             return JsonResultUtils.fail(1, "更新用户信息失败");
 
