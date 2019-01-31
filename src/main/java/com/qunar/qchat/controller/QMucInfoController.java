@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -45,7 +46,7 @@ public class QMucInfoController {
      * @return  JsonResult<?>
      * */
     @RequestMapping(value = "/get_increment_mucs.qunar", method = RequestMethod.POST)
-    public JsonResult<?> getIncrement(HttpServletRequest httpRequest,
+    public Object getIncrement(HttpServletRequest httpRequest,
                                       @RequestBody GetIncrementMucsRequest paramRequest) {
         try {
             if(Objects.isNull(paramRequest.getT())) {
@@ -80,7 +81,20 @@ public class QMucInfoController {
                 result.add(map);
             });
 
-            return JsonResultUtils.success(result);
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("ret", true);
+            resultMap.put("errcode", 0);
+            resultMap.put("errmsg", "");
+            if(CollectionUtils.isNotEmpty(mucIncrementInfoList)) {
+                resultMap.put("version", String.valueOf(mucIncrementInfoList.get(0).getCreated_at().getTime()));
+            } else {
+                BigDecimal bigDecimal = new BigDecimal(paramRequest.getT());
+                resultMap.put("version", bigDecimal.toString());
+            }
+            resultMap.put("data", result);
+
+            return resultMap;
+
         } catch (Exception e) {
             LOGGER.error("catch error : {}", ExceptionUtils.getStackTrace(e));
             return JsonResultUtils.fail(0, "服务器操作异常");
