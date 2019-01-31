@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -85,14 +86,15 @@ public class QMucInfoController {
             resultMap.put("errcode", 0);
             resultMap.put("errmsg", "");
             if(CollectionUtils.isNotEmpty(mucIncrementInfoList)) {
-                resultMap.put("version", String.valueOf(mucIncrementInfoList.get(0).getT()));
+                resultMap.put("version", String.valueOf(mucIncrementInfoList.get(0).getCreated_at().getTime()));
             } else {
-                resultMap.put("version", "");
+                BigDecimal bigDecimal = new BigDecimal(paramRequest.getT());
+                resultMap.put("version", bigDecimal.toString());
             }
-
             resultMap.put("data", result);
 
             return resultMap;
+
         } catch (Exception e) {
             LOGGER.error("catch error : {}", ExceptionUtils.getStackTrace(e));
             return JsonResultUtils.fail(0, "服务器操作异常");

@@ -1,10 +1,13 @@
 package com.qunar.qchat.dao.model;
 
+import java.util.Date;
+
 public class MucIncrementInfo {
     private String muc_name;
     private String domain;
     private Long t;
     private int registed_flag;
+    private Date created_at;
 
     public String getMuc_name() {
         return muc_name;
@@ -36,5 +39,13 @@ public class MucIncrementInfo {
 
     public void setRegisted_flag(int registed_flag) {
         this.registed_flag = registed_flag;
+    }
+
+    public Date getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(Date created_at) {
+        this.created_at = created_at;
     }
 }
