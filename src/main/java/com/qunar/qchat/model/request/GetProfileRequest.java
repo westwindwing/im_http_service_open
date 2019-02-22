@@ -50,7 +50,7 @@ public class GetProfileRequest {
 
     public String getUrl() {
         if (url == null) {
-            return Config.DEFAULT_PIC_URL;
+            return "";
         }
         return url;
     }
