@@ -4,9 +4,15 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Strings;
 import com.qunar.qchat.constants.Config;
+import com.qunar.qchat.model.JsonResult;
+import com.qunar.qchat.service.QtalkUpdateStructService;
+import com.qunar.qchat.utils.CookieUtils;
 import com.qunar.qchat.utils.HttpClientUtils;
 import com.qunar.qchat.utils.JacksonUtils;
 import com.qunar.qchat.utils.JsonResultUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * QtalkUpdateStructure
@@ -25,29 +32,26 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/newapi/update/")
 public class QtalkUpdateStructure {
+    private static final Logger LOGGER = LoggerFactory.getLogger(QtalkUpdateStructure.class);
+
+    @Autowired
+    private QtalkUpdateStructService qchatUpdateStructService;
 
     @ResponseBody
     @RequestMapping(value = "/getUpdateUsers.qunar", method = RequestMethod.POST)
-    public String updateStructure(HttpServletRequest request, @RequestBody String param) {
-        Cookie[] cookies = request.getCookies();
-        if(null==cookies||cookies.length==0){
-            return JacksonUtils.obj2String(JsonResultUtils.fail(1, "cookie无效"));
-        }
-        String ckey = null;
-        for (Cookie c : cookies) {
-            if (c.getName().equals("q_ckey")) {
-                ckey = c.getValue();
-            }
-        }
-        if(Strings.isNullOrEmpty(ckey)){
-            return JacksonUtils.obj2String(JsonResultUtils.fail(1, "cookie无效"));
+    public JsonResult<?> updateStructure(HttpServletRequest request, @RequestBody String param) {
+        Map<String, Object> qckey = CookieUtils.getUserbyCookie(request);
+        String domain = (String) qckey.get("d");
+        if (Strings.isNullOrEmpty(domain)) {
+            return JsonResultUtils.fail(1, "请指定域");
         }
         JSONObject receivedParam = JSON.parseObject(param);
         Integer clientUserInfoVersion = (Integer) receivedParam.get("version");
         if (clientUserInfoVersion == null || clientUserInfoVersion < 0) {
-            return JacksonUtils.obj2String(JsonResultUtils.fail(1, "无效version"));
+            return JsonResultUtils.fail(1, "无效version");
         }
-        String result = HttpClientUtils.postJson(Config.getProperty("qtalk_update_url"), param,ckey);
-        return result;
+        LOGGER.info("get the users info the client users info version is：{},domain is：{}", clientUserInfoVersion, domain);
+        return qchatUpdateStructService.getQtalk(clientUserInfoVersion, domain);
     }
+
 }
