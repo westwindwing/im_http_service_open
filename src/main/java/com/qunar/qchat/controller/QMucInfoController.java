@@ -144,10 +144,7 @@ public class QMucInfoController {
                 //判断群数据是否存在
                 Integer mucCount = iMucInfoDao.selectMucCountByMucName(request.getMuc_name());
                 if(mucCount == null || mucCount == 0){
-                    /*private String muc_name;
-                    private String nick;
-                    private String title;
-                    private String desc;*/
+
                     MucInfoModel mucInfoModel = new MucInfoModel();
                     mucInfoModel.setMucName(request.getMuc_name());
                     mucInfoModel.setShowName(request.getNick());
