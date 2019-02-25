@@ -39,6 +39,11 @@ public class Config {
     public static final int COOKIE_MAX_AGE = getIntProperty("cookie.max.age", 604800);
 
     public static final String DEFAULT_PIC_URL = getProperty("default_pic_url");
+
+    public static final String GET_QCHAT_VCARD_INFO_URL = getProperty("get_qchat_vcard_info_url");
+    public static final String GET_QTALK_VCARD_INFO_URL = getProperty("get_qtalk_vcard_info_url");
+
+
     private static Properties props;
 
     private synchronized static void init() {

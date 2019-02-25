@@ -8,6 +8,8 @@ import com.qunar.qchat.dao.model.VCardInfoModel;
 import com.qunar.qchat.model.JsonResult;
 import com.qunar.qchat.model.request.GetUserStatusRequest;
 import com.qunar.qchat.model.request.GetVCardInfoRequest;
+import com.qunar.qchat.model.result.GetQChatVcardResult;
+import com.qunar.qchat.model.result.GetQTalkVcardResult;
 import com.qunar.qchat.model.result.GetVCardInfoResult;
 import com.qunar.qchat.model.result.SearchVCardResult;
 import com.qunar.qchat.utils.CommonRedisUtil;
@@ -122,6 +124,7 @@ public class QDomainController {
     public JsonResult<?> getVCardInfo(@RequestBody List<GetVCardInfoRequest> requests) {
 
         //LOGGER.info(requests.toString());
+        //LOGGER.info(requests.toString());
         try {
             if (CollectionUtils.isEmpty(requests)) {
                 return JsonResultUtils.fail(1, QChatConstant.PARAMETER_ERROR);
@@ -129,29 +132,26 @@ public class QDomainController {
 
             List<Map<String, Object>> finalResult = new ArrayList<>();
             for (GetVCardInfoRequest request : requests) {
+
                 Map<String, Object> map = new HashMap<>();
-                String domain = request.getDomain();
-
-                if(StringUtils.isBlank(domain)
-                        || QChatConstant.ENVIRONMENT_QCHAT.equals(Config.CURRENT_ENV)) {
-                    return JsonResultUtils.fail(1, "不支持当前操作");
-                }
-
-                map.put("domain", domain);
+                map.put("domain", request.getDomain());
 
                 List<GetVCardInfoResult> users = new ArrayList<>();
                 List<GetVCardInfoRequest.UserInfo> userInfos = request.getUsers();
+
                 for (GetVCardInfoRequest.UserInfo userInfo : userInfos) {
 
                     if (StringUtils.isBlank(userInfo.getUser())) {
                         return JsonResultUtils.fail(1, QChatConstant.PARAMETER_ERROR);
                     }
 
-                    Integer count = vCardInfoDao.getCountByUsernameAndHost(userInfo.getUser(), domain);
+                    //公共域， 查库
+                    LOGGER.info("请求公共域的用户信息，用户:" + userInfo.getUser());
+                    Integer count = vCardInfoDao.getCountByUsernameAndHost(userInfo.getUser(), request.getDomain());
                     if (count > 0) {
-                        VCardInfoModel result = vCardInfoDao.selectByUsernameAndHost(userInfo.getUser(), domain, userInfo.getVersion());
+                        VCardInfoModel result = vCardInfoDao.selectByUsernameAndHost(userInfo.getUser(), request.getDomain(), userInfo.getVersion());
                         GetVCardInfoResult resultBean = new GetVCardInfoResult();
-                        resultBean.setType("qunar_emp");
+                        resultBean.setType("");
                         resultBean.setLoginName(userInfo.getUser());
                         resultBean.setEmail("");
                         resultBean.setGender(String.valueOf(result.getGender()));
@@ -162,7 +162,7 @@ public class QDomainController {
                                 : result.getUrl());
                         resultBean.setUid("0");
                         resultBean.setUsername(userInfo.getUser());
-                        resultBean.setDomain(domain);
+                        resultBean.setDomain(request.getDomain());
                         resultBean.setCommenturl(QChatConstant.VCARD_COMMON_URL);
 
                         users.add(resultBean);
@@ -171,11 +171,11 @@ public class QDomainController {
                     }
                 }
                 map.put("users", users);
-
                 finalResult.add(map);
             }
 
             return JsonResultUtils.success(finalResult);
+
         }catch (Exception ex) {
             LOGGER.error("catch error : {}", ExceptionUtils.getStackTrace(ex));
             return JsonResultUtils.fail(0, QChatConstant.SERVER_ERROR);

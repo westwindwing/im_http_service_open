@@ -140,13 +140,31 @@ public class QMucInfoController {
 
             List<UpdateMucNickResult> resultList = new ArrayList<>();
             for(UpdateMucNickRequest request : requests) {
-                MucInfoModel parameter = new MucInfoModel();
-                parameter.setMucName(request.getMuc_name());
-                parameter.setShowName(request.getNick());
-                parameter.setMucTitle(request.getTitle());
-                parameter.setMucDesc(request.getDesc());
-                MucInfoModel newMucInfo = iMucInfoDao.updateMucInfo(parameter);
 
+                //判断群数据是否存在
+                Integer mucCount = iMucInfoDao.selectMucCountByMucName(request.getMuc_name());
+                if(mucCount == null || mucCount == 0){
+                    /*private String muc_name;
+                    private String nick;
+                    private String title;
+                    private String desc;*/
+                    MucInfoModel mucInfoModel = new MucInfoModel();
+                    mucInfoModel.setMucName(request.getMuc_name());
+                    mucInfoModel.setShowName(request.getNick());
+                    mucInfoModel.setMucTitle(request.getTitle());
+                    mucInfoModel.setMucDesc(request.getDesc());
+                    iMucInfoDao.insertMucInfo(mucInfoModel);
+                } else {
+                    MucInfoModel parameter = new MucInfoModel();
+                    parameter.setMucName(request.getMuc_name());
+                    parameter.setShowName(request.getNick());
+                    parameter.setMucTitle(request.getTitle());
+                    parameter.setMucDesc(request.getDesc());
+                    iMucInfoDao.updateMucInfo(parameter);
+                }
+
+
+                MucInfoModel newMucInfo = iMucInfoDao.selectByMucName(request.getMuc_name());
                 UpdateMucNickResult result = new UpdateMucNickResult();
                 if (!Objects.isNull(result)) {
                     result.setMuc_name(newMucInfo.getMucName());

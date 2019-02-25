@@ -22,9 +22,17 @@ public interface IMucInfoDao {
 
     MucInfoModel updateMucInfo(MucInfoModel mucInfo);
 
+    Integer selectMucCountByMucName(@Param("mucName") String mucName);
+
 
     List<MucInfoModel> selectMucInfoByIds(@Param("ids") List<String> ids);
 
 
     int checkMucExist(@Param("mucName") String mucName);
+
+
+    Integer insertMucInfo(MucInfoModel mucInfoModel);
+
+
+    MucInfoModel selectByMucName(@Param("mucName") String mucName);
 }
