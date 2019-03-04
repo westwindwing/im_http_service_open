@@ -176,11 +176,11 @@
                     "gender": "1",
                     "nickname": "xxx",
                     "webname": "xxx",
-                    "imageurl": "xxx",
+                    "imageurl": "http://xxxx/xxx.jpg",
                     "uid": "0",
                     "username": "xxx",
                     "domain": "hostname",
-                    "commenturl": "https://xxx/dianping/user_comment.php",
+                    "commenturl": "https://xxx/xxx",
                     "V": "16"
                 }
             ]
