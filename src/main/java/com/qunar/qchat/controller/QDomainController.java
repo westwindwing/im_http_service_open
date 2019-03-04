@@ -145,8 +145,6 @@ public class QDomainController {
                         return JsonResultUtils.fail(1, QChatConstant.PARAMETER_ERROR);
                     }
 
-                    //公共域， 查库
-                    LOGGER.info("请求公共域的用户信息，用户:" + userInfo.getUser());
                     Integer count = vCardInfoDao.getCountByUsernameAndHost(userInfo.getUser(), request.getDomain());
                     if (count > 0) {
                         VCardInfoModel result = vCardInfoDao.selectByUsernameAndHost(userInfo.getUser(), request.getDomain(), userInfo.getVersion());
@@ -156,6 +154,7 @@ public class QDomainController {
                         resultBean.setEmail("");
                         resultBean.setGender(String.valueOf(result.getGender()));
                         resultBean.setNickname(result.getNickname());
+                        resultBean.setWebname(result.getNickname());
                         resultBean.setV(String.valueOf(result.getVersion()));
                         resultBean.setImageurl(Objects.isNull(result.getUrl()) ?
                                 getImageUrl(String.valueOf(result.getGender()))

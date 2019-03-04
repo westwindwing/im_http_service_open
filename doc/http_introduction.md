@@ -150,7 +150,7 @@
 
 ## 6.获取用户信息
 ```
-接口：/newapi/domain/get_vcard_info.quna
+接口：/newapi/domain/get_vcard_info.qunar
 请求方式：POST
 参数：
 [{
@@ -167,20 +167,21 @@
     "errmsg": "",
     "data": [
         {
-            "domain": "domain1",
+            "domain": "ejabhost1",
             "users": [
                 {
-                    "type": "qunar_emp",
+                    "type": "xxx",
                     "loginName": "xxx",
                     "email": "",
-                    "gender": "0",
+                    "gender": "1",
                     "nickname": "xxx",
-                    "imageurl": "http://xxxx/xxx.jpg?name=2259dda784fe8c4a7a7d26b208a06476.jpg&file=file/2259dda784fe8c4a7a7d26b208a06476.jpg&fileName=file/2259dda784fe8c4a7a7d26b208a06476.jpg",
+                    "webname": "xxx",
+                    "imageurl": "xxx",
                     "uid": "0",
-                    "username": "malin.ma",
-                    "domain": "domain1",
-                    "commenturl": "https://xxx/xxx",
-                    "v": "4"
+                    "username": "xxx",
+                    "domain": "hostname",
+                    "commenturl": "https://xxx/dianping/user_comment.php",
+                    "V": "16"
                 }
             ]
         }
@@ -283,12 +284,12 @@
             "domain": "conference.domain2",
             "mucs": [
                 {
-                    "sn": "xxxx,xs",
-                    "md": "",
-                    "mt": "",
-                    "mp": "https://xxx/xxx.png",
-                    "vs": "1",
-                    "mn": "xxx"
+                    "SM": "xxxx,xs",
+                    "MD": "",
+                    "MT": "",
+                    "MP": "https://xxx/xxx.png",
+                    "VS": "1",
+                    "MN": "xxx"
                 }
             ]
         }
