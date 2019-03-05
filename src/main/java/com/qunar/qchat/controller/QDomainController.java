@@ -163,7 +163,7 @@ public class QDomainController {
                         resultBean.setUsername(userInfo.getUser());
                         resultBean.setDomain(request.getDomain());
                         resultBean.setCommenturl(QChatConstant.VCARD_COMMON_URL);
-
+                        resultBean.setMood(result.getMood());
                         users.add(resultBean);
                     } else {
                         users.add(new GetVCardInfoResult());

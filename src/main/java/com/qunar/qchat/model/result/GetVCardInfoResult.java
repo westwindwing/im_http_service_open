@@ -21,6 +21,7 @@ public class GetVCardInfoResult {
     private String username;
     private String domain;
     private String commenturl;
+    private String mood;
 
     public String getType() {
         return type;
@@ -116,6 +117,14 @@ public class GetVCardInfoResult {
 
     public void setWebname(String webname) {
         this.webname = webname;
+    }
+
+    public String getMood() {
+        return mood;
+    }
+
+    public void setMood(String mood) {
+        this.mood = mood;
     }
 
     @Override
