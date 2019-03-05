@@ -33,9 +33,11 @@ public class QProfileController {
 
     /**
      * 获取用户信息.
+     *  改接口已与get_vcard_info.qunar合并
      * @param request GetProfileRequest
      * @return JsonResult<?>
      * */
+    @Deprecated
     @RequestMapping(value = "/get_profile.qunar", method = RequestMethod.POST)
     public JsonResult<?> getProfile(@RequestBody GetProfileRequest request) {
         try {

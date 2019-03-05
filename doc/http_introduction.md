@@ -181,7 +181,8 @@
                     "username": "xxx",
                     "domain": "hostname",
                     "commenturl": "https://xxx/xxx",
-                    "V": "16"
+                    "V": "16",
+                    "mood":""
                 }
             ]
         }
