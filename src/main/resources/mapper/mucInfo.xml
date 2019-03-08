@@ -25,7 +25,7 @@
 
     <select id="selectMucIncrementInfoNew" resultType="com.qunar.qchat.dao.model.MucIncrementInfo">
         select muc_name,created_at,domain,(extract(epoch from date_trunc('MS', created_at))*1000 - 8*3600*1000) as t,registed_flag
-        from user_register_mucs where created_at > to_timestamp(#{t},'YYYY-MM-DD hh24:MI:ss ms')
+        from user_register_mucs where created_at > to_timestamp(#{t},'YYYY-MM-DD hh24:MI:ss.ms')
         and username = #{u} and host = #{d} order by created_at desc;
     </select>
 

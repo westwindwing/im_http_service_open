@@ -65,7 +65,7 @@ public class QMucInfoController {
             /**
              * 解决pg to_timestamp 只接受秒数的问题.
              * */
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
             String strTime = sdf.format(paramRequest.getT());
 
             List<MucIncrementInfo> mucIncrementInfoList = iMucInfoDao.selectMucIncrementInfoNew(paramRequest.getU(), paramRequest.getD(), strTime);
