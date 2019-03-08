@@ -1,7 +1,7 @@
 package com.qunar.qchat.model.result;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
@@ -40,39 +40,39 @@ public class GetMucVcardResult {
     }
 
     public static class MucInfo {
-        @JsonProperty("MN")
+
         private String MN;
-        @JsonProperty("SN")
+
         private String SN;
-        @JsonProperty("MD")
+
         private String MD;
-        @JsonProperty("MT")
+
         private String MT;
-        @JsonProperty("MP")
+
         private String MP;
-        @JsonProperty("VS")
+
         private String VS;
-        @JsonIgnore
+
+
+        @JsonProperty("MN")
         public String getMN() {
             return MN;
         }
 
-        @JsonIgnore
         public void setMN(String MN) {
             this.MN = MN;
         }
 
-        @JsonIgnore
+        @JsonProperty("SN")
         public String getSN() {
             return SN;
         }
 
-        @JsonIgnore
         public void setSN(String SN) {
             this.SN = SN;
         }
 
-        @JsonIgnore
+        @JsonProperty("MD")
         public String getMD() {
             return MD;
         }
@@ -81,29 +81,29 @@ public class GetMucVcardResult {
             this.MD = MD;
         }
 
-        @JsonIgnore
+        @JsonProperty("MT")
         public String getMT() {
             return MT;
         }
 
-        @JsonIgnore
-        public void
-        setMT(String MT) {
+        public void setMT(String MT) {
             this.MT = MT;
         }
-        @JsonIgnore
+
+        @JsonProperty("MP")
         public String getMP() {
             return MP;
         }
-        @JsonIgnore
+
         public void setMP(String MP) {
             this.MP = MP;
         }
-        @JsonIgnore
+
+        @JsonProperty("VS")
         public String getVS() {
             return VS;
         }
-        @JsonIgnore
+
         public void setVS(String VS) {
             this.VS = VS;
         }

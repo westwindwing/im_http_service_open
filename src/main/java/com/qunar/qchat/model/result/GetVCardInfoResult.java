@@ -1,5 +1,7 @@
 package com.qunar.qchat.model.result;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @auth dongzd.zhang
  * @Date 2018/11/5 18:08
@@ -11,12 +13,15 @@ public class GetVCardInfoResult {
     private String email;
     private String gender;
     private String nickname;
+    private String webname;
+    @JsonProperty("V")
     private String V;
     private String imageurl;
     private String uid;
     private String username;
     private String domain;
     private String commenturl;
+    private String mood;
 
     public String getType() {
         return type;
@@ -106,6 +111,22 @@ public class GetVCardInfoResult {
         this.commenturl = commenturl;
     }
 
+    public String getWebname() {
+        return webname;
+    }
+
+    public void setWebname(String webname) {
+        this.webname = webname;
+    }
+
+    public String getMood() {
+        return mood;
+    }
+
+    public void setMood(String mood) {
+        this.mood = mood;
+    }
+
     @Override
     public String toString() {
         return "GetVCardInfoResult{" +
@@ -114,6 +135,7 @@ public class GetVCardInfoResult {
                 ", email='" + email + '\'' +
                 ", gender='" + gender + '\'' +
                 ", nickname='" + nickname + '\'' +
+                ", webname='" + webname + '\'' +
                 ", V='" + V + '\'' +
                 ", imageurl='" + imageurl + '\'' +
                 ", uid='" + uid + '\'' +

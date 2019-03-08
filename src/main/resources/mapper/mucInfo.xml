@@ -43,6 +43,9 @@
          returning muc_name,show_name,muc_desc,muc_title,muc_pic,version
     </select>
 
+    <select id="selectMucCountByMucName" resultType="int">
+        select count(*) from muc_vcard_info where muc_name = #{mucName}
+    </select>
 
     <select id="selectMucInfoByIds" resultMap="mucIncrementInfoResultMap">
         select <include refid="column_all"/> from muc_vcard_info where muc_name in
@@ -52,6 +55,54 @@
 
     <select id="checkMucExist" resultType="int">
         select count(*) from muc_room where name = #{mucName}
+    </select>
+
+    <insert id="insertMucInfo" parameterType="com.qunar.qchat.dao.model.MucInfoModel">
+        insert into muc_vcard_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            /* private String mucName;
+            private String showName;
+            private String mucDesc;
+            private String mucTitle;
+            private String mucPic;
+            private String version;*/
+            <if test="mucName != null">
+                muc_name,
+            </if>
+            <if test="mucDesc != null">
+                muc_desc,
+            </if>
+            <if test="showName != null">
+                show_name,
+            </if>
+            <if test="mucTitle != null">
+                muc_title,
+            </if>
+            <if test="mucPic != null">
+                muc_pic,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="mucName != null">
+                #{mucName},
+            </if>
+            <if test="mucDesc != null">
+                #{mucDesc},
+            </if>
+            <if test="showName != null">
+                #{showName},
+            </if>
+            <if test="mucTitle != null">
+                #{mucTitle},
+            </if>
+            <if test="mucPic != null">
+                #{mucPic},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectByMucName" resultMap="mucIncrementInfoResultMap">
+        select <include refid="column_all"/> from muc_vcard_info where muc_name = #{mucName}
     </select>
 
 </mapper>

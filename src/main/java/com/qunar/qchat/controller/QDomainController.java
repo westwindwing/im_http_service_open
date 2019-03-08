@@ -8,6 +8,8 @@ import com.qunar.qchat.dao.model.VCardInfoModel;
 import com.qunar.qchat.model.JsonResult;
 import com.qunar.qchat.model.request.GetUserStatusRequest;
 import com.qunar.qchat.model.request.GetVCardInfoRequest;
+import com.qunar.qchat.model.result.GetQChatVcardResult;
+import com.qunar.qchat.model.result.GetQTalkVcardResult;
 import com.qunar.qchat.model.result.GetVCardInfoResult;
 import com.qunar.qchat.model.result.SearchVCardResult;
 import com.qunar.qchat.utils.CommonRedisUtil;
@@ -66,8 +68,8 @@ public class QDomainController {
 
                 String status = commonRedisUtil.getUserStatus(key);
                 Map<String, String> currentUserStatus = new HashMap<>();
-                currentUserStatus.put("u", key);
-                currentUserStatus.put("o", status);
+                currentUserStatus.put("u", StringUtils.defaultString(key, ""));
+                currentUserStatus.put("o", StringUtils.defaultString(status,""));
                 userStatus.add(currentUserStatus);
             }
             rowData.put("ul", userStatus);
@@ -122,64 +124,75 @@ public class QDomainController {
     public JsonResult<?> getVCardInfo(@RequestBody List<GetVCardInfoRequest> requests) {
 
         //LOGGER.info(requests.toString());
+        //LOGGER.info(requests.toString());
         try {
-            if (CollectionUtils.isEmpty(requests)) {
+            if (!checkGetVcardInfoParameters(requests)) {
                 return JsonResultUtils.fail(1, QChatConstant.PARAMETER_ERROR);
             }
 
             List<Map<String, Object>> finalResult = new ArrayList<>();
             for (GetVCardInfoRequest request : requests) {
+
                 Map<String, Object> map = new HashMap<>();
-                String domain = request.getDomain();
-
-                if(StringUtils.isBlank(domain)
-                        || QChatConstant.ENVIRONMENT_QCHAT.equals(Config.CURRENT_ENV)) {
-                    return JsonResultUtils.fail(1, "不支持当前操作");
-                }
-
-                map.put("domain", domain);
+                map.put("domain", request.getDomain());
 
                 List<GetVCardInfoResult> users = new ArrayList<>();
                 List<GetVCardInfoRequest.UserInfo> userInfos = request.getUsers();
+
                 for (GetVCardInfoRequest.UserInfo userInfo : userInfos) {
 
-                    if (StringUtils.isBlank(userInfo.getUser())) {
-                        return JsonResultUtils.fail(1, QChatConstant.PARAMETER_ERROR);
-                    }
-
-                    Integer count = vCardInfoDao.getCountByUsernameAndHost(userInfo.getUser(), domain);
+                    Integer count = vCardInfoDao.getCountByUsernameAndHost(userInfo.getUser(), request.getDomain());
                     if (count > 0) {
-                        VCardInfoModel result = vCardInfoDao.selectByUsernameAndHost(userInfo.getUser(), domain, userInfo.getVersion());
+                        VCardInfoModel result = vCardInfoDao.selectByUsernameAndHost(userInfo.getUser(), request.getDomain(), userInfo.getVersion());
                         GetVCardInfoResult resultBean = new GetVCardInfoResult();
-                        resultBean.setType("qunar_emp");
-                        resultBean.setLoginName(userInfo.getUser());
+                        resultBean.setType("");
+                        resultBean.setLoginName(StringUtils.defaultString(userInfo.getUser(), ""));
                         resultBean.setEmail("");
-                        resultBean.setGender(String.valueOf(result.getGender()));
-                        resultBean.setNickname(result.getNickname());
-                        resultBean.setV(String.valueOf(result.getVersion()));
+                        resultBean.setGender(StringUtils.defaultString(String.valueOf(result.getGender()), ""));
+                        resultBean.setNickname(StringUtils.defaultString(result.getNickname(),""));
+                        resultBean.setWebname(StringUtils.defaultString(result.getNickname(), ""));
+                        resultBean.setV(StringUtils.defaultString(String.valueOf(result.getVersion()), ""));
                         resultBean.setImageurl(Objects.isNull(result.getUrl()) ?
                                 getImageUrl(String.valueOf(result.getGender()))
                                 : result.getUrl());
                         resultBean.setUid("0");
-                        resultBean.setUsername(userInfo.getUser());
-                        resultBean.setDomain(domain);
+                        resultBean.setUsername(StringUtils.defaultString(userInfo.getUser(), ""));
+                        resultBean.setDomain(request.getDomain());
                         resultBean.setCommenturl(QChatConstant.VCARD_COMMON_URL);
-
+                        resultBean.setMood(StringUtils.defaultString(result.getMood(), ""));
                         users.add(resultBean);
-                    } else {
-                        users.add(new GetVCardInfoResult());
                     }
                 }
                 map.put("users", users);
-
                 finalResult.add(map);
             }
 
             return JsonResultUtils.success(finalResult);
+
         }catch (Exception ex) {
             LOGGER.error("catch error : {}", ExceptionUtils.getStackTrace(ex));
             return JsonResultUtils.fail(0, QChatConstant.SERVER_ERROR);
         }
+    }
+
+    private boolean checkGetVcardInfoParameters(List<GetVCardInfoRequest> requests) {
+        if (CollectionUtils.isEmpty(requests)) {
+            return false;
+        }
+
+        for(GetVCardInfoRequest request : requests) {
+            if(StringUtils.isEmpty(request.getDomain())) {
+                return false;
+            }
+
+            List<GetVCardInfoRequest.UserInfo> userInfoList = request.getUsers();
+            for(GetVCardInfoRequest.UserInfo userInfo : userInfoList) {
+                if(StringUtils.isEmpty(userInfo.getUser())) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 

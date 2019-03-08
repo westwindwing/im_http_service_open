@@ -33,9 +33,11 @@ public class QProfileController {
 
     /**
      * 获取用户信息.
+     *  改接口已与get_vcard_info.qunar合并
      * @param request GetProfileRequest
      * @return JsonResult<?>
      * */
+    @Deprecated
     @RequestMapping(value = "/get_profile.qunar", method = RequestMethod.POST)
     public JsonResult<?> getProfile(@RequestBody GetProfileRequest request) {
         try {
@@ -102,11 +104,11 @@ public class QProfileController {
                         request.getUrl(), request.getMood());
 
                 SetProfileResult result = SetProfileResult.builder()
-                        .user(newProfile.getUsername())
-                        .domain(newProfile.getHost())
-                        .url(newProfile.getUrl())
-                        .mood(newProfile.getMood())
-                        .version(String.valueOf(newProfile.getVersion())).build();
+                        .user(StringUtils.defaultString(newProfile.getUsername(), ""))
+                        .domain(StringUtils.defaultString(newProfile.getHost(), ""))
+                        .url(StringUtils.defaultString(newProfile.getUrl(), ""))
+                        .mood(StringUtils.defaultString(newProfile.getMood(), ""))
+                        .version(StringUtils.defaultString(String.valueOf(newProfile.getVersion()), "")).build();
                 resultList.add(result);
                 effectiveRow ++;
             }
