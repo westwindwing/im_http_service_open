@@ -74,9 +74,9 @@ public class QMucInfoController {
             List<Map<String, Object>> result = new ArrayList<>();
             mucIncrementInfoList.stream().forEach(item -> {
                 Map<String, Object> map = new HashMap<>();
-                map.put("M", item.getMuc_name());
-                map.put("D", item.getDomain());
-                map.put("T", String.valueOf(item.getT()));
+                map.put("M", StringUtils.defaultString(item.getMuc_name(), ""));
+                map.put("D", StringUtils.defaultString(item.getDomain(), ""));
+                map.put("T", StringUtils.defaultString(String.valueOf(item.getT()), ""));
                 map.put("F", item.getRegisted_flag());
                 result.add(map);
             });
@@ -164,11 +164,11 @@ public class QMucInfoController {
                 MucInfoModel newMucInfo = iMucInfoDao.selectByMucName(request.getMuc_name());
                 UpdateMucNickResult result = new UpdateMucNickResult();
                 if (!Objects.isNull(result)) {
-                    result.setMuc_name(newMucInfo.getMucName());
-                    result.setVersion(newMucInfo.getVersion());
-                    result.setShow_name(newMucInfo.getShowName());
-                    result.setMuc_title(newMucInfo.getMucTitle());
-                    result.setMuc_desc(newMucInfo.getMucDesc());
+                    result.setMuc_name(StringUtils.defaultString(newMucInfo.getMucName(), ""));
+                    result.setVersion(StringUtils.defaultString(newMucInfo.getVersion(), ""));
+                    result.setShow_name(StringUtils.defaultString(newMucInfo.getShowName(), ""));
+                    result.setMuc_title(StringUtils.defaultString(newMucInfo.getMucTitle(), ""));
+                    result.setMuc_desc(StringUtils.defaultString(newMucInfo.getMucDesc(), ""));
                 }
                 resultList.add(result);
 
@@ -194,16 +194,8 @@ public class QMucInfoController {
             //LOGGER.info(request.toString());
 
             //检查参数是否合法
-            if (CollectionUtils.isEmpty(request)) {
-                return JsonResultUtils.success(Collections.EMPTY_LIST);
-            }
-            for(GetMucVcardRequest item : request) {
-                List<GetMucVcardRequest.MucInfo> mucInfos = item.getMucs();
-                for(GetMucVcardRequest.MucInfo info : mucInfos) {
-                    if (StringUtils.isBlank(info.getMuc_name())) {
-                        return JsonResultUtils.fail(0, "参数错误");
-                    }
-                }
+            if (!checkGetMucVCardInfoParams(request)) {
+                return JsonResultUtils.fail(0, "参数错误");
             }
 
             List<GetMucVcardResult> results =
@@ -219,12 +211,12 @@ public class QMucInfoController {
                     List<GetMucVcardResult.MucInfo> mucInfoResultList =
                             mucInfoModels.stream().map(mucInfoModel -> {
                                 GetMucVcardResult.MucInfo resultMucInfo = new GetMucVcardResult.MucInfo();
-                                resultMucInfo.setMN(mucInfoModel.getMucName());
-                                resultMucInfo.setSN(mucInfoModel.getShowName());
-                                resultMucInfo.setMD(mucInfoModel.getMucDesc());
-                                resultMucInfo.setMT(mucInfoModel.getMucTitle());
-                                resultMucInfo.setMP(mucInfoModel.getMucPic());
-                                resultMucInfo.setVS(mucInfoModel.getVersion());
+                                resultMucInfo.setMN(StringUtils.defaultString(mucInfoModel.getMucName(), ""));
+                                resultMucInfo.setSN(StringUtils.defaultString(mucInfoModel.getShowName(), ""));
+                                resultMucInfo.setMD(StringUtils.defaultString(mucInfoModel.getMucDesc(), ""));
+                                resultMucInfo.setMT(StringUtils.defaultString(mucInfoModel.getMucTitle(), ""));
+                                resultMucInfo.setMP(StringUtils.defaultString(mucInfoModel.getMucPic(), ""));
+                                resultMucInfo.setVS(StringUtils.defaultString(mucInfoModel.getVersion(), ""));
                                 return resultMucInfo;
                             }).collect(Collectors.toList());
                     result.setMucs(mucInfoResultList);
@@ -240,6 +232,21 @@ public class QMucInfoController {
             LOGGER.error("catch error : {} ", ExceptionUtils.getStackTrace(ex));
             return JsonResultUtils.fail(0, "服务器操作异常");
         }
+    }
 
+    private boolean checkGetMucVCardInfoParams(List<GetMucVcardRequest> request){
+        if (CollectionUtils.isEmpty(request)) {
+            return false;
+        }
+        for(GetMucVcardRequest item : request) {
+            List<GetMucVcardRequest.MucInfo> mucInfos = item.getMucs();
+            for(GetMucVcardRequest.MucInfo info : mucInfos) {
+                if (StringUtils.isBlank(info.getMuc_name())) {
+                    //return JsonResultUtils.fail(0, "参数错误");
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

@@ -104,11 +104,11 @@ public class QProfileController {
                         request.getUrl(), request.getMood());
 
                 SetProfileResult result = SetProfileResult.builder()
-                        .user(newProfile.getUsername())
-                        .domain(newProfile.getHost())
-                        .url(newProfile.getUrl())
-                        .mood(newProfile.getMood())
-                        .version(String.valueOf(newProfile.getVersion())).build();
+                        .user(StringUtils.defaultString(newProfile.getUsername(), ""))
+                        .domain(StringUtils.defaultString(newProfile.getHost(), ""))
+                        .url(StringUtils.defaultString(newProfile.getUrl(), ""))
+                        .mood(StringUtils.defaultString(newProfile.getMood(), ""))
+                        .version(StringUtils.defaultString(String.valueOf(newProfile.getVersion()), "")).build();
                 resultList.add(result);
                 effectiveRow ++;
             }

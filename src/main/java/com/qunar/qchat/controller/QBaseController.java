@@ -11,6 +11,7 @@ import com.qunar.qchat.model.request.GetInviteInfoRequest;
 import com.qunar.qchat.utils.CookieUtils;
 import com.qunar.qchat.utils.HttpClientUtils;
 import com.qunar.qchat.utils.JsonResultUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -76,6 +77,15 @@ public class QBaseController {
 
             List<InviteInfoModel> inviteInfoModelList = iInviteInfoDao.selectInviteInfo(request.getUser(),
                                           request.getD(), request.getTime());
+
+            if(CollectionUtils.isNotEmpty(inviteInfoModelList)) {
+                inviteInfoModelList.stream().forEach(bean -> {
+                    bean.setIhost(StringUtils.defaultString(bean.getIhost(), ""));
+                    bean.setBody(StringUtils.defaultString(bean.getBody(), ""));
+                    bean.setInviter(StringUtils.defaultString(bean.getInviter(), ""));
+                    bean.setTimestamp(StringUtils.defaultString(bean.getTimestamp(), ""));
+                });
+            }
 
             return JsonResultUtils.success(inviteInfoModelList);
         } catch (Exception e) {
