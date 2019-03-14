@@ -36,4 +36,11 @@ public interface IProfileDao {
                               @Param("url") String url,
                               @Param("mood") String mood);
 
+    int selectUserCountByUserIdAndHost(@Param("userId") String userId, @Param("host") String host);
+
+
+    int selectVCardCount(@Param("userName") String username,
+                         @Param("host") String host);
+
+    int insertVCard(Profile profile);
 }
