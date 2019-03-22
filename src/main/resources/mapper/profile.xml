@@ -18,7 +18,7 @@
             <if test="url != null and url != ''">
                 url = #{url},
             </if>
-            <if test="mood != null and mood != ''">
+            <if test="mood != null">
                 mood = #{mood},
             </if>
             profile_version = vcard_version.profile_version + 1,
