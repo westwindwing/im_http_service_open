@@ -25,7 +25,7 @@ import java.util.Map;
 @RestController
 public class QGetRblController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(QGetHistoryContorller.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(QGetRblController.class);
 
     @Autowired
     private HttpServletRequest request;
@@ -39,7 +39,6 @@ public class QGetRblController {
 
         List<GetRblMsg> msgs = new ArrayList<>();
         List<GetRblMsg> groupmsgs = new ArrayList<>();
-//        List<GetRblMsg> rblMsgs = new ArrayList<>();
 
         try{
             if (json.length() > 0) {
