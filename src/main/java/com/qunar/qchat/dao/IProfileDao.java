@@ -18,19 +18,6 @@ public interface IProfileDao {
     Profile selectProfileInfoByUserAndHost(@Param("username") String username,
                                            @Param("host") String host);
 
-
-    List<Profile> updateMoodInfo(
-            @Param("username") String username,
-            @Param("host") String host,
-            @Param("mood") String mood
-    );
-
-    List<Profile> updateUrlInfo(
-            @Param("username") String username,
-            @Param("host") String host,
-            @Param("url") String url
-    );
-
     Profile updateProfileInfo(@Param("username") String username,
                               @Param("host") String host,
                               @Param("url") String url,
