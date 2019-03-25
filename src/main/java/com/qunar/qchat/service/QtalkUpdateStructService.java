@@ -1,20 +1,26 @@
 package com.qunar.qchat.service;
 
 
+import com.google.common.base.Strings;
 import com.qunar.qchat.dao.IUserInfo;
 import com.qunar.qchat.dao.model.UserInfoQtalk;
 import com.qunar.qchat.model.JsonResult;
 import com.qunar.qchat.model.UpdateStructResultMode;
+import com.qunar.qchat.utils.CookieUtils;
 import com.qunar.qchat.utils.JsonResultUtils;
+import jodd.util.CollectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static javafx.scene.input.KeyCode.X;
 
 /**
  * QtalkUpdateStructService
@@ -28,6 +34,9 @@ public class QtalkUpdateStructService {
 
     @Autowired
     private IUserInfo iUserInfo;
+
+    @Autowired
+    private SendNotifySeivice sendNotifySeivice;
 
     public JsonResult<?> getQtalk(Integer version, String domian) {
         UpdateStructResultMode updateStructResultMode = new UpdateStructResultMode();
@@ -66,4 +75,24 @@ public class QtalkUpdateStructService {
         }
         return false;
     }
+
+    public boolean triggerSend(Integer hostId) {
+        String host = iUserInfo.getDomain(hostId);
+        if (Strings.isNullOrEmpty(host)) {
+            return false;
+        }
+        List<String> users = iUserInfo.getAllUsersByHost(hostId);
+        if (CollectionUtils.isEmpty(users)) {
+            LOGGER.warn("this domian not search legal users");
+            return false;
+        }
+        List<String> JID = new ArrayList<>();
+        for (String user : users) {
+            JID.add(user + "@" + host);
+        }
+        sendNotifySeivice.sendNotify(JID, host);
+        return true;
+    }
+
+
 }

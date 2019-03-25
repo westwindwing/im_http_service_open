@@ -30,11 +30,17 @@ public interface IUserInfo {
      */
     Integer getHostInfo(@Param("hostID") String host);
 
+    String getDomain(@Param("hostID") Integer host);
+
     /**
      * qtalk qunar 域获取员工信息
+     *
      * @param version
      * @return
      */
     List<UserInfoQtalk> getQtalkUsersByVersion(@Param("version") Integer version, @Param("hostID") Integer hostID);
+
+    List<String> getAllUsersByHost(@Param("hostId") Integer hostId);
+
 
 }

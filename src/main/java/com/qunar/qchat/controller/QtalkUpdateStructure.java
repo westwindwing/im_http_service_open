@@ -54,4 +54,19 @@ public class QtalkUpdateStructure {
         return qchatUpdateStructService.getQtalk(clientUserInfoVersion, domain);
     }
 
+
+    @ResponseBody
+    @RequestMapping(value = "/triggerNotify.qunar", method = RequestMethod.POST)
+    public JsonResult<?> trigger(HttpServletRequest request, @RequestBody String param) {
+        JSONObject receivedParam = JSON.parseObject(param);
+        Integer hostId = (Integer) receivedParam.get("hostId");
+        if (hostId == null || hostId < 0) {
+            return JsonResultUtils.fail(1, "hostId 无效");
+        }
+        LOGGER.info("trigger send notify hostId:{}", hostId);
+        if (qchatUpdateStructService.triggerSend(hostId)) {
+            return JsonResultUtils.success();
+        }
+        return JsonResultUtils.fail(500,"服务器错误");
+    }
 }
