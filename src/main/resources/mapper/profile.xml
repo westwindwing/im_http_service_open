@@ -36,4 +36,35 @@
 
         returning username, host, mood, url, profile_version as version;
     </select>
+
+    <select id="selectUserCountByUserIdAndHost" resultType="int">
+        select count(*) from host_users u, host_info h where u.host_id = h.id and u.user_id = #{userId} and u.hire_flag = 1 and host = #{host}
+    </select>
+
+    <select id="selectVCardCount" resultType="int">
+        select count(*) from vcard_version where username= #{userName} and host = #{host}
+    </select>
+
+    <insert id="insertVCard" parameterType="com.qunar.qchat.dao.model.Profile">
+        insert into vcard_version
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username != null">username,</if>
+            <if test="url != null">url,</if>
+            <if test="mood != null">mood,</if>
+            <if test="host != null">host,</if>
+            <if test="version != null">version,</if>
+            <if test="version != null">profile_version,</if>
+            <if test="gender != null">gender,</if>
+        </trim>
+
+        <trim prefix=" values (" suffix=")" suffixOverrides=",">
+            <if test="username != null">#{username},</if>
+            <if test="url != null">#{url},</if>
+            <if test="mood != null">#{mood},</if>
+            <if test="host != null">#{host},</if>
+            <if test="version != null">#{version},</if>
+            <if test="version != null">#{version},</if>
+            <if test="gender != null">#{gender},</if>
+        </trim>
+    </insert>
 </mapper>

@@ -93,22 +93,39 @@ public class QProfileController {
                     return JsonResultUtils.fail(1, "不支持的操作");
                 }
 
-                Profile profileList = iProfileDao.selectProfileInfoByUserAndHost(request.getUser(), request.getDomain());
+                //Profile profileList = iProfileDao.selectProfileInfoByUserAndHost(request.getUser(), request.getDomain());
+                int count = iProfileDao.selectUserCountByUserIdAndHost(request.getUser(), request.getDomain());
 
-                if (Objects.isNull(profileList)) {
+
+                if (count == 0) {
                     return JsonResultUtils.fail(1, "user:" + request.getUser() +
                             ", host: " + request.getDomain() + "数据不存在");
                 }
 
-                Profile newProfile = iProfileDao.updateProfileInfo(request.getUser(), request.getDomain(),
-                        request.getUrl(), request.getMood());
+                int vcardCount = iProfileDao.selectVCardCount(request.getUser(), request.getDomain());
 
-                SetProfileResult result = SetProfileResult.builder()
-                        .user(StringUtils.defaultString(newProfile.getUsername(), ""))
-                        .domain(StringUtils.defaultString(newProfile.getHost(), ""))
-                        .url(StringUtils.defaultString(newProfile.getUrl(), ""))
-                        .mood(StringUtils.defaultString(newProfile.getMood(), ""))
-                        .version(StringUtils.defaultString(String.valueOf(newProfile.getVersion()), "")).build();
+                Profile newProfile = null;
+                if(vcardCount == 0) {
+                    Profile profile = new Profile();
+                    profile.setUsername(request.getUser());
+                    profile.setHost(request.getDomain());
+                    profile.setMood(request.getMood());
+                    profile.setUrl(request.getUrl());
+                    profile.setVersion(1);
+                    profile.setGender(0);
+                    iProfileDao.insertVCard(profile);
+                }else if(vcardCount > 0) {
+                    iProfileDao.updateProfileInfo(request.getUser(), request.getDomain(),
+                            request.getUrl(), request.getMood());
+                }
+
+                newProfile = iProfileDao.selectProfileInfoByUserAndHost(request.getUser(), request.getDomain());
+                SetProfileResult result = new SetProfileResult();//SetProfileResult.builder()
+                result.setUser(StringUtils.defaultString(newProfile.getUsername(), ""));
+                result.setDomain(StringUtils.defaultString(newProfile.getHost(), ""));
+                result.setUrl(StringUtils.defaultString(newProfile.getUrl(), ""));
+                result.setMood(StringUtils.defaultString(newProfile.getMood(), ""));
+                result.setVersion(StringUtils.defaultString(String.valueOf(newProfile.getVersion()), ""));
                 resultList.add(result);
                 effectiveRow ++;
             }
