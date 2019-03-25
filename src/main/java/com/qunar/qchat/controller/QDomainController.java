@@ -144,23 +144,25 @@ public class QDomainController {
                     Integer count = vCardInfoDao.getCountByUsernameAndHost(userInfo.getUser(), request.getDomain());
                     if (count > 0) {
                         VCardInfoModel result = vCardInfoDao.selectByUsernameAndHost(userInfo.getUser(), request.getDomain(), userInfo.getVersion());
-                        GetVCardInfoResult resultBean = new GetVCardInfoResult();
-                        resultBean.setType("");
-                        resultBean.setLoginName(StringUtils.defaultString(userInfo.getUser(), ""));
-                        resultBean.setEmail("");
-                        resultBean.setGender(StringUtils.defaultString(String.valueOf(result.getGender()), ""));
-                        resultBean.setNickname(StringUtils.defaultString(result.getNickname(),""));
-                        resultBean.setWebname(StringUtils.defaultString(result.getNickname(), ""));
-                        resultBean.setV(StringUtils.defaultString(String.valueOf(result.getVersion()), ""));
-                        resultBean.setImageurl(Objects.isNull(result.getUrl()) ?
-                                getImageUrl(String.valueOf(result.getGender()))
-                                : result.getUrl());
-                        resultBean.setUid("0");
-                        resultBean.setUsername(StringUtils.defaultString(userInfo.getUser(), ""));
-                        resultBean.setDomain(request.getDomain());
-                        resultBean.setCommenturl(QChatConstant.VCARD_COMMON_URL);
-                        resultBean.setMood(StringUtils.defaultString(result.getMood(), ""));
-                        users.add(resultBean);
+                        if(Objects.nonNull(result)) {
+                            GetVCardInfoResult resultBean = new GetVCardInfoResult();
+                            resultBean.setType("");
+                            resultBean.setLoginName(StringUtils.defaultString(userInfo.getUser(), ""));
+                            resultBean.setEmail("");
+                            resultBean.setGender(StringUtils.defaultString(String.valueOf(result.getGender()), ""));
+                            resultBean.setNickname(StringUtils.defaultString(result.getNickname(), ""));
+                            resultBean.setWebname(StringUtils.defaultString(result.getNickname(), ""));
+                            resultBean.setV(StringUtils.defaultString(String.valueOf(result.getVersion()), ""));
+                            resultBean.setImageurl(Objects.isNull(result.getUrl()) ?
+                                    getImageUrl(String.valueOf(result.getGender()))
+                                    : result.getUrl());
+                            resultBean.setUid("0");
+                            resultBean.setUsername(StringUtils.defaultString(userInfo.getUser(), ""));
+                            resultBean.setDomain(request.getDomain());
+                            resultBean.setCommenturl(QChatConstant.VCARD_COMMON_URL);
+                            resultBean.setMood(StringUtils.defaultString(result.getMood(), ""));
+                            users.add(resultBean);
+                        }
                     }
                 }
                 map.put("users", users);
