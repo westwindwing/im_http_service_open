@@ -21,6 +21,10 @@ public class JsonResultUtils {
         return new JsonResult<>(JsonResult.FAIL, errcode, errmsg, "");
     }
 
+    public static <T> JsonResult<T> fail(int errcode, String errmsg, T data) {
+        return new JsonResult<>(JsonResult.FAIL, errcode, errmsg, data);
+    }
+
     public static JsonResult<?> response(String response) {
         try {
             if (response == null) {
