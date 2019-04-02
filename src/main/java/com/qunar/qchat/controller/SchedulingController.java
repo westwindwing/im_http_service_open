@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 
-@RequestMapping("/scheduling/")
+@RequestMapping("/newapi/scheduling/")
 @RestController
 public class SchedulingController {
     private static final Logger LOGGER = LoggerFactory.getLogger(SchedulingController.class);
