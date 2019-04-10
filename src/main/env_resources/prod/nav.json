@@ -14,7 +14,9 @@
     "pubkey": "rsa_public_key",
     "xmppmport": 5222,
     "httpurl": "http://ip:8080/newapi",
-    "apiurl": "http://ip:8080/api"
+    "apiurl": "http://ip:8080/api",
+    "mobileurl":"http://ip:8080/newapi",
+    "leaderurl":"http://ip:8080/newapi"
   },
   "imConfig": {
     "RsaEncodeType": 1,

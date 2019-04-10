@@ -41,7 +41,7 @@ public class SchedulingNoticeService {
 
         for (SchedulingInfo member : res) {
             LOGGER.info("meeting name is {}, meeting locale is {}, begin_time is {}", member.getScheduling_name(), member.getScheduling_locale(), member.getBegin_time());
-            String url = Config.getProperty("url_send_qtalk_message");
+            String url = Config.getProperty("push_message_notice_url");
             String from = NoticeMessage.appendQCDomain(Config.getProperty("meeting_robot"));
             String to = NoticeMessage.appendQCDomain(member.getMember());
             String message = NoticeMessage.makeNoticeMessage(from, to, "您受邀的行程\"" + member.getScheduling_name() + "\"(" + member.getScheduling_locale() + ":" + member.getScheduling_room() + ")将于15分钟后开始(会议开始时间：" + DateUtils.getFormatTime(member.getBegin_time()) + ")", "");
