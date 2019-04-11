@@ -16,7 +16,7 @@
     "httpurl": "http://ip:8080/newapi",
     "apiurl": "http://ip:8080/api",
     "mobileurl":"http://ip:8080/newapi/getMobile",
-    "leaderurl":"http://ip:8080/newapi/getLeader"
+    "leaderurl":"http://ip:8080/newapi/getLeader",
     "shareurl":"http://ip:8080/newapi",
     "domainhost":"qunar.com"
   },
