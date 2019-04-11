@@ -17,4 +17,9 @@ public interface IHostInfoDao {
      * */
     HostInfoModel selectHostInfoByHostName(@Param("domain") String host);
 
+    /**
+     * 选取默认host信息
+      * @return
+     */
+    HostInfoModel selectDefaultHost();
 }

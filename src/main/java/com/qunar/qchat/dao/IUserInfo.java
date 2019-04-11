@@ -42,5 +42,31 @@ public interface IUserInfo {
 
     List<String> getAllUsersByHost(@Param("hostId") Integer hostId);
 
+    /**
+     * 获取手机号
+     * @param userId
+     * @param hostId
+     * @return
+     */
+    String getUserMobile(@Param("userId")String userId,@Param("hostId")Integer hostId);
+
+    /**
+     * 获取领导
+     * @param userId
+     * @param hostId
+     * @return
+     */
+    String getUserLeader(@Param("userId")String userId,@Param("hostId")Integer hostId);
+
+    /**
+     * 获取就职状态 1在职 0离职
+     * @param userId
+     * @param hostId
+     * @return
+     */
+    Integer getUserHireFlag(@Param("userId")String userId,@Param("hostId")Integer hostId);
+
+
+    UserInfoQtalk selectUserByUserId(@Param("userId")String userId,@Param("hostId")Integer hostId);
 
 }
