@@ -16,7 +16,9 @@
     "httpurl": "http://ip:8080/newapi",
     "apiurl": "http://ip:8080/api",
     "mobileurl":"http://ip:8080/newapi",
-    "leaderurl":"http://ip:8080/newapi"
+    "leaderurl":"http://ip:8080/newapi",
+    "shareurl":"http://ip:8080/newapi",
+    "domainhost":"qunar.com"
   },
   "imConfig": {
     "RsaEncodeType": 1,
