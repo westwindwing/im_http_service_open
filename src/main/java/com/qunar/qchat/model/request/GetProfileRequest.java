@@ -38,9 +38,6 @@ public class GetProfileRequest {
     }
 
     public String getMood() {
-        if(mood == null) {
-            return "";
-        }
         return mood;
     }
 
