@@ -18,13 +18,13 @@ public class QGetTheUserExtInfoController {
     @Resource
     private GetUserExtInfoService getUserExtInfoService;
 
-    @PostMapping("/getMobile")
+    @PostMapping("/getMobile.qunar")
     @ResponseBody
     public GetTelResult getMobiel(@RequestBody GetMobileRequest getMobileRequest) {
         return getUserExtInfoService.getTheMobile(getMobileRequest);
     }
 
-    @PostMapping("/getLeader")
+    @PostMapping("/getLeader.qunar")
     @ResponseBody
     public GetTelResult getLeader(@RequestBody GetLeaderRequest getLeaderRequest) {
         return getUserExtInfoService.getLeader(getLeaderRequest);

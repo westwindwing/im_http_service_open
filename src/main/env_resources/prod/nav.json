@@ -15,8 +15,8 @@
     "xmppmport": 5222,
     "httpurl": "http://ip:8080/newapi",
     "apiurl": "http://ip:8080/api",
-    "mobileurl":"http://ip:8080/newapi/getMobile",
-    "leaderurl":"http://ip:8080/newapi/getLeader",
+    "mobileurl":"http://ip:8080/newapi/getMobile.qunar",
+    "leaderurl":"http://ip:8080/newapi/getLeader.qunar",
     "shareurl":"http://ip:8080/newapi",
     "domainhost":"qunar.com"
   },
