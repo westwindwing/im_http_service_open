@@ -390,13 +390,13 @@ type=consult
 返回值：
   鉴定通过：
   {
-	    "ret": true,
-	    "errcode": 0,
-	    "errmsg": "",
-	   "data": {
-		     "u": "hubin.hu",
-		     "d": "ejabhost1"
-	     }
+     "ret": true,
+     "errcode": 0,
+     "errmsg": "",
+     "data": {
+	"u": "hubin.hu",
+	"d": "ejabhost1"
+	}
   }
   鉴定失败：
   {
