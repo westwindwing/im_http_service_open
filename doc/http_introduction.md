@@ -13,6 +13,7 @@
  - [11.获取新增群信息](#11.获取新增群信息)
  - [12.快捷回复消息接口](#12.快捷回复消息接口)
  - [13.获取系统时间](#20.获取系统时间)
+ - [14.ckey验证接口](#14.ckey验证接口)
 ## 1.获取用户勋章列表
 ```
 接口：/newapi/user/get_user_decoration.qunar
@@ -378,4 +379,32 @@ type=consult
   "data": 1540959380
 }
 ```
+## 14.ckey验证接口
+接口:/corp/auth/check_user_tkey.qunar
+请求方式:POST
+参数：
+{
+   "ckey":"dT1odWJpbi5odSZkPWVqYWJob3N0MSZrPTI3NkU2MDFCOEMxRDIwRDBBOThDN0NGNzEwMjhFOUY1JnQ9MTU1NTA1OTYzMjY5OQ=="
+}
+返回值：
+  鉴定通过：
+  {
+	    "ret": true,
+	    "errcode": 0,
+	    "errmsg": "",
+	   "data": {
+		     "u": "hubin.hu",
+		     "d": "ejabhost1"
+	     }
+  }
+  鉴定失败：
+  {
+    "ret": false,
+    "errcode": 2,
+    "errmsg": "",
+    "data": ""
+  }
+  
+
+
 
