@@ -380,6 +380,7 @@ type=consult
 }
 ```
 ## 14.ckey验证接口
+```
 接口:/corp/auth/check_user_tkey.qunar
 请求方式:POST
 参数：
@@ -404,7 +405,7 @@ type=consult
     "errmsg": "",
     "data": ""
   }
-  
+```
 
 
 
