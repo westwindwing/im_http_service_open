@@ -381,4 +381,32 @@ type=consult
   "data": 1540959380
 }
 ```
+## 13.ckey验证接口
+```
+接口：/corp/auth/check_user_tkey.qunar
+请求方式：POST
+参数：
+{
+   "ckey":"dT1odWJpbi5odSZkPWVqYWJob3N0MSZrPTI3NkU2MDFCOEMxRDIwRDBBOThDN0NGNzEwMjhFOUY1JnQ9MTU1NTA1OTYzMjY5OQ=="
+}
+返回值：
+  鉴定通过：
+  {
+	"ret": true,
+	"errcode": 0,
+	"errmsg": "",
+	"data": {
+		"u": "hubin.hu",
+		"d": "ejabhost1"
+	}
+  }
+鉴定失败：
+ {
+    "ret": false,
+    "errcode": 2,
+    "errmsg": "",
+    "data": ""
+ }
+ ```
+
 
