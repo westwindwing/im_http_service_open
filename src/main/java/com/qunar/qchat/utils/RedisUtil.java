@@ -164,7 +164,16 @@ public class RedisUtil {
 
         return Sets.newHashSet();
     }
-
+    public  Set<String> hGetKeys(int table,String key) {
+        try {
+            ((JedisConnectionFactory) redisTemplate.getConnectionFactory()).setDatabase(table);
+            HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
+            return hashOperations.keys(key);
+        } catch (Exception e) {
+            logger.info("从redis中获取hash数据失败，key:{},hKeys:{}", key);
+            return null;
+        }
+    }
     public Set<String> hkeys(int table, String key) {
 
 
@@ -318,5 +327,8 @@ public class RedisUtil {
     public void setRedisTemplate(StringRedisTemplate _redisTemplate) {
         redisTemplate = _redisTemplate;
     }
+
+
+
 
 }

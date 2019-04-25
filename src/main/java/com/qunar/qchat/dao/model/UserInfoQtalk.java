@@ -75,4 +75,7 @@ public class UserInfoQtalk {
     @JsonIgnore
     private int frozen_flag = 1;
 
+    @JsonIgnore
+    private String leader;
+
 }

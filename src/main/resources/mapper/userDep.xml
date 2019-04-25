@@ -73,12 +73,12 @@
         select user_id from host_users where host_id=#{hostId} and hire_flag=1;
     </select>
 
-    <select id="getUserMobile" resultType="java.lang.String" parameterType="java.lang.String">
+    <select id="getUserMobile" resultType="java.lang.String">
         select tel from host_users where user_id=#{userId} and host_id = #{hostId};
     </select>
 
 
-    <select id="getUserLeader" resultType="java.lang.String" parameterType="java.lang.String">
+    <select id="getUserLeader" resultType="java.lang.String">
         select leader from host_users where user_id=#{userId} and host_id=#{hostId};
     </select>
     <select id="getUserHireFlag"  resultType="java.lang.Integer">
@@ -101,9 +101,10 @@
         user_type AS user_type,
         version AS version,
         email AS email,
+        leader AS leader,
         pinyin AS pinyi
                 FROM host_users
-        where host_id=#{hostID} and user_id=#{userId};
+        where host_id=#{hostId} and user_id=#{userId};
     </select>
 
 </mapper>

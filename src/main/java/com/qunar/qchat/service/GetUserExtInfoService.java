@@ -16,11 +16,12 @@ import com.qunar.qchat.utils.JacksonUtils;
 import com.qunar.qchat.utils.JsonResultUtils;
 import javafx.util.Pair;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
 
-@Resource
+@Service
 @Slf4j
 public class GetUserExtInfoService {
 
@@ -52,11 +53,12 @@ public class GetUserExtInfoService {
         }
         String tel = iUserInfo.getUserMobile(getMobileRequest.getUser_id(), hostInfoModel.getId());
         if(Strings.isNullOrEmpty(tel)){
-            result.setErrcode(1);
+            result.setErrcode(403);
             result.setMsg("查询手机号为空");
             return result;
         }
-        Pair<String, String> phone = new Pair<>("phone", tel);
+        HashMap<String, String> phone = new HashMap<>();
+        phone.put("phone",tel);
         result.setMsg("查询成功");
         result.setErrcode(0);
         result.setData(phone);
@@ -77,17 +79,22 @@ public class GetUserExtInfoService {
             return result;
         }
         HostInfoModel hostInfoModel = iHostInfoDao.selectDefaultHost();
-        String leader = iUserInfo.getUserLeader(getLeaderRequest.getUser_id(),hostInfoModel.getId());
-        if(Strings.isNullOrEmpty(leader)){
-            result.setErrcode(403);
+        HashMap<String,Object> data = new HashMap<>(4);
+        UserInfoQtalk user = iUserInfo.selectUserByUserId(getLeaderRequest.getQtalk_id(),hostInfoModel.getId());
+        UserInfoQtalk leader = null;
+        if(Strings.isNullOrEmpty(user.getUser_id())){
+            leader = user;
+        }else {
+            leader = iUserInfo.selectUserByUserId(user.getLeader(),hostInfoModel.getId());
+        }
+        if(leader==null){
             result.setMsg("不存在的员工");
+            result.setErrcode(403);
             return result;
         }
-        UserInfoQtalk user = iUserInfo.selectUserByUserId(getLeaderRequest.getUser_id(),hostInfoModel.getId());
-        HashMap<String,String> data = new HashMap<>(4);
-        data.put("leader",user.getUser_name());
-        data.put("email",user.getEmail());
-        data.put("qtalk_id",user.getUser_id());
+        data.put("leader",leader.getUser_name());
+        data.put("email",leader.getEmail());
+        data.put("qtalk_id",leader.getUser_id());
         data.put("sn","");
         result.setMsg("查询成功");
         result.setErrcode(0);
