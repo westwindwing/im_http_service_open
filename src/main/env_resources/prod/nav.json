@@ -23,8 +23,7 @@
   "imConfig": {
     "RsaEncodeType": 1,
     "showOrganizational": true,
-    "mail":"qtalk.test.org",
-    "foundConfigUrl":"http://ip:8080/startalk/management/find/get/navigation"
+    "mail":"qtalk.test.org"
   },
   "ability": {
     "searchurl": "http://ip:8080/search/search.py"
