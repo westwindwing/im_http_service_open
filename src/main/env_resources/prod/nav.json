@@ -24,7 +24,8 @@
     "mail":"qtalk.test.org"
   },
   "ability": {
-    "searchurl": "http://ip:8080/search/search.py"
+    "searchurl": "http://ip:8080/search/search.py",
+    "showmsgstat": true,
   },
   "RNAndroidAbility": {
     "RNMineView": true,
