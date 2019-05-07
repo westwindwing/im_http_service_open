@@ -15,7 +15,7 @@
     "xmppmport": 5222,
     "httpurl": "http://ip:8080/newapi",
     "apiurl": "http://ip:8080/api",
-    "shareurl":"http://ip:8080/newapi",
+    "shareurl":"http://ip:8080/py/sharemsg",
     "domainhost":"qunar.com"
   },
   "imConfig": {
@@ -24,7 +24,7 @@
     "mail":"qtalk.test.org"
   },
   "ability": {
-    "searchurl": "http://ip:8080/search/search.py",
+    "searchurl": "http://ip:8080/py/search",
     "showmsgstat": true
   },
   "RNAndroidAbility": {
