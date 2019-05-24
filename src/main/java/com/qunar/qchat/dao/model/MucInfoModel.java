@@ -9,6 +9,7 @@ public class MucInfoModel {
 
     private String mucName;
     private String showName;
+    private String showNamePinyin;
     private String mucDesc;
     private String mucTitle;
     private String mucPic;
@@ -62,11 +63,20 @@ public class MucInfoModel {
         this.version = version;
     }
 
+    public String getShowNamePinyin() {
+        return showNamePinyin;
+    }
+
+    public void setShowNamePinyin(String showNamePinyin) {
+        this.showNamePinyin = showNamePinyin;
+    }
+
     @Override
     public String toString() {
         return "MucInfoModel{" +
                 "mucName='" + mucName + '\'' +
                 ", showName='" + showName + '\'' +
+                ", showNamePinyin='" + showNamePinyin + '\'' +
                 ", mucDesc='" + mucDesc + '\'' +
                 ", mucTitle='" + mucTitle + '\'' +
                 ", mucPic='" + mucPic + '\'' +

@@ -3,6 +3,7 @@ package com.qunar.qchat.controller;
 import com.alibaba.fastjson.JSON;
 import com.qunar.qchat.constants.Config;
 import com.qunar.qchat.constants.QChatConstant;
+import com.qunar.qchat.dao.IFloginUserDao;
 import com.qunar.qchat.dao.IVCardInfoDao;
 import com.qunar.qchat.dao.model.VCardInfoModel;
 import com.qunar.qchat.model.JsonResult;
@@ -44,6 +45,8 @@ public class QDomainController {
 
     @Autowired
     private IVCardInfoDao vCardInfoDao;
+    @Autowired
+    private IFloginUserDao floginUserDao;
 
     @RequestMapping(value = "/get_user_status.qunar", method = RequestMethod.POST)
     public JsonResult<?> getUserStatus(@RequestBody GetUserStatusRequest request) {
@@ -56,10 +59,42 @@ public class QDomainController {
                 return JsonResultUtils.fail(1, "参数错误");
             }
 
+            List<String> originUsers = new ArrayList<>(request.getUsers());
             List<Map<String, Object>> resultData = new ArrayList<>();
             List<Map<String, String>> userStatus = new ArrayList<>();
             Map<String, Object> rowData = new HashMap<>();
-            for(String key : request.getUsers()) {
+
+            /** 处理机器人用户 */
+            long step1StartTime = System.currentTimeMillis();
+            List<String> floginUsers = floginUserDao.selectFloginUserNames();
+            if(CollectionUtils.isNotEmpty(floginUsers)) {
+
+                if(CollectionUtils.isNotEmpty(originUsers)) {
+
+                    /** 获取当前domain */
+                    String firstUserId = originUsers.get(0);
+                    if(StringUtils.isBlank(firstUserId) ||
+                            firstUserId.indexOf("@") == -1) {
+                        return JsonResultUtils.fail(1, "参数错误");
+                    }
+                    String domain = firstUserId.split("@")[1];
+                    //加上了domian 后的 flogin users
+                    //List<String> processedFloginUsers = new ArrayList<>(floginUsers.size());
+                    for(String floginUserId : floginUsers) {
+                        String processedFloginUserId = floginUserId + "@" + domain;
+                        //processedFloginUsers.add(processedFloginUserId);
+                        if(originUsers.contains(processedFloginUserId)) {
+                            Map<String, String> currentUserStatus = new HashMap<>();
+                            currentUserStatus.put("u", StringUtils.defaultString(processedFloginUserId, ""));
+                            currentUserStatus.put("o", "online");
+                            userStatus.add(currentUserStatus);
+                            originUsers.remove(processedFloginUserId);
+                        }
+                    }
+                }
+            }
+
+            for(String key : originUsers) {
 
                 if(StringUtils.isBlank(key) ||
                         key.indexOf("@") == -1) {

@@ -36,6 +36,7 @@
             <if test="mucDesc != null"> muc_desc = #{mucDesc}, </if>
             <if test="mucTitle != null"> muc_title = #{mucTitle}, </if>
             <if test="mucPic != null and mucPic != ''"> muc_pic = #{mucPic}, </if>
+            <if test="showNamePinyin != null"> show_name_pinyin = #{showNamePinyin}, </if>
             version = cast(muc_vcard_info.version as integer)+ 1
          </set>
          where muc_name = #{mucName}
@@ -60,12 +61,7 @@
     <insert id="insertMucInfo" parameterType="com.qunar.qchat.dao.model.MucInfoModel">
         insert into muc_vcard_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            /* private String mucName;
-            private String showName;
-            private String mucDesc;
-            private String mucTitle;
-            private String mucPic;
-            private String version;*/
+
             <if test="mucName != null">
                 muc_name,
             </if>
@@ -80,6 +76,9 @@
             </if>
             <if test="mucPic != null">
                 muc_pic,
+            </if>
+            <if test="showNamePinyin !=null">
+                show_name_pinyin,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -97,6 +96,9 @@
             </if>
             <if test="mucPic != null">
                 #{mucPic},
+            </if>
+            <if test="showNamePinyin != null">
+                #{showNamePinyin},
             </if>
         </trim>
     </insert>
