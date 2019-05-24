@@ -61,12 +61,7 @@
     <insert id="insertMucInfo" parameterType="com.qunar.qchat.dao.model.MucInfoModel">
         insert into muc_vcard_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            /* private String mucName;
-            private String showName;
-            private String mucDesc;
-            private String mucTitle;
-            private String mucPic;
-            private String version;*/
+
             <if test="mucName != null">
                 muc_name,
             </if>
