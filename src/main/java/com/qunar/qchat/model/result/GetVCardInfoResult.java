@@ -22,6 +22,8 @@ public class GetVCardInfoResult {
     private String domain;
     private String commenturl;
     private String mood;
+    //添加手机号
+    private String tel;
 
     public String getType() {
         return type;
@@ -125,6 +127,14 @@ public class GetVCardInfoResult {
 
     public void setMood(String mood) {
         this.mood = mood;
+    }
+
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
     }
 
     @Override

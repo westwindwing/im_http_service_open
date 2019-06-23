@@ -116,6 +116,7 @@ public class QGetHistoryContorller {
 
             }
         }catch (Exception e){
+            e.printStackTrace();
             LOGGER.error("catch error {} {}", ExceptionUtils.getStackTrace(e) , json);
             return JsonResultUtils.fail(0, "服务器操作异常:\n "+ExceptionUtils.getStackTrace(e));
         }

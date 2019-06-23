@@ -1,7 +1,6 @@
 package com.qunar.qchat.controller;
 
 import com.qunar.qchat.constants.Config;
-import com.qunar.qchat.constants.QChatConstant;
 import com.qunar.qchat.dao.IMucInfoDao;
 import com.qunar.qchat.dao.model.MucIncrementInfo;
 import com.qunar.qchat.dao.model.MucInfoModel;
@@ -14,14 +13,6 @@ import com.qunar.qchat.model.result.UpdateMucNickResult;
 import com.qunar.qchat.utils.CookieUtils;
 import com.qunar.qchat.utils.HttpClientUtils;
 import com.qunar.qchat.utils.JsonResultUtils;
-import net.sourceforge.pinyin4j.PinyinHelper;
-import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
-import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
-import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
-import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
-import org.ansj.domain.Result;
-import org.ansj.domain.Term;
-import org.ansj.splitWord.analysis.ToAnalysis;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -157,10 +148,6 @@ public class QMucInfoController {
                     MucInfoModel mucInfoModel = new MucInfoModel();
                     mucInfoModel.setMucName(request.getMuc_name());
                     mucInfoModel.setShowName(request.getNick());
-
-                    String showNamePinyin = convertMucShowName2Pinyin(request.getNick());
-                    mucInfoModel.setShowNamePinyin(showNamePinyin);
-
                     mucInfoModel.setMucTitle(request.getTitle());
                     mucInfoModel.setMucDesc(request.getDesc());
                     iMucInfoDao.insertMucInfo(mucInfoModel);
@@ -168,10 +155,6 @@ public class QMucInfoController {
                     MucInfoModel parameter = new MucInfoModel();
                     parameter.setMucName(request.getMuc_name());
                     parameter.setShowName(request.getNick());
-
-                    String showNamePinyin = convertMucShowName2Pinyin(request.getNick());
-                    parameter.setShowNamePinyin(showNamePinyin);
-
                     parameter.setMucTitle(request.getTitle());
                     parameter.setMucDesc(request.getDesc());
                     iMucInfoDao.updateMucInfo(parameter);
@@ -199,126 +182,6 @@ public class QMucInfoController {
             return JsonResultUtils.fail(0, "服务器操作异常");
         }
     }
-
-
-
-    /**
-     * 将群名称转成拼音（分词）.
-     * @param showName
-     * @return String
-     * */
-    private String convertMucShowName2Pinyin(String showName) {
-
-        if(StringUtils.isEmpty(showName)) {
-            return showName;
-        }
-
-        //定义拼音格式
-        HanyuPinyinOutputFormat format = new HanyuPinyinOutputFormat();
-        format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
-        format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
-        format.setVCharType(HanyuPinyinVCharType.WITH_V);
-
-        //分词
-        Result result = ToAnalysis.parse(showName);
-        List<Term> list = result.getTerms();
-
-        StringBuilder pinyin = new StringBuilder();
-        StringBuilder firstCharactorStr = new StringBuilder();
-
-        for(Term word : list) {
-            try {
-                String wordName = word.getName();
-                String tempWordName = wordName;
-                String wordType = word.getNatureStr();
-                boolean isChinese = word.getName().matches("[\\u4E00-\\u9FA5]+");
-                //boolean isNumber = word.getName().matches("");
-                //System.out.println(wordName + "," + wordType );
-
-                System.out.println(wordName);
-
-                if(isContainNumber(tempWordName) && !isChinese && !wordType.equals("en")) {
-                    char[] charArray = tempWordName.toCharArray();
-                    for (int i = 0; i < charArray.length; i++) {
-                        String n = charArray[i] + "";
-                        if (QChatConstant.NUMBER_LIST.contains(n)) {
-                            pinyin.append(n);
-                            if(i != charArray.length - 1) {
-                                try {
-                                    wordName = tempWordName.substring(i + 1, tempWordName.length());
-                                }catch (Exception ex) {
-                                    LOGGER.error("ex: i = " + i + "," + wordName + ", " + ex.getMessage());
-                                }
-                            }
-                            firstCharactorStr.append(n);
-                        }
-                    }
-
-                    if (!org.springframework.util.StringUtils.isEmpty(wordName)) {
-                        String tempPinYIn = PinyinHelper.toHanYuPinyinString(wordName, format, "", false);
-                        pinyin.append(tempPinYIn);
-                        if(tempPinYIn.length() >= 1) {
-                            firstCharactorStr.append(tempPinYIn.substring(0, 1));
-                        }
-                    }
-                }
-
-                //只处理中文和英文
-                if (isChinese || wordType.equals("en")) {
-                    if ("en".equals(wordType)) {
-                        pinyin.append(wordName);
-                        //英文- 整个单词加到首字母字段中
-                        firstCharactorStr.append(wordName);
-                    } else {
-                        // System.out.println(wordName);
-                        String tempPinYin = PinyinHelper.toHanYuPinyinString(wordName, format, "", false);
-                        pinyin.append(tempPinYin);
-                        //截取首字母
-                        /*if(tempPinYin.length() >= 1) {
-                            firstCharactorStr = firstCharactorStr + tempPinYin.substring(0, 1);
-                        }*/
-                        firstCharactorStr.append(getFirstPinYin(wordName, format));
-                    }
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                continue;
-            }
-        }
-        String finalStr = pinyin + "|" + firstCharactorStr;
-        if(finalStr.length() > 1000) {
-            return finalStr.substring(0, 1000);
-        }
-        return finalStr;
-    }
-
-
-    public static boolean isContainNumber(String str) {
-        char[] chars = str.toCharArray();
-        for(char c : chars) {
-            String n = c + "";
-            if(QChatConstant.NUMBER_LIST.contains(n)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    public static String getFirstPinYin(String word, HanyuPinyinOutputFormat format) throws Exception {
-
-        StringBuilder firstStr = new StringBuilder();
-        char[] cs = word.toCharArray();
-        for (char c : cs) {
-            String cStr = c + "";
-            String pinyin = PinyinHelper.toHanYuPinyinString(cStr, format, "", false);
-            if(!org.springframework.util.StringUtils.isEmpty(pinyin)) {
-                firstStr.append(pinyin.substring(0, 1));
-            }
-        }
-        return firstStr.toString();
-    }
-
 
     /**
      * 获取群信息.

@@ -54,6 +54,31 @@ public class QtalkUpdateStructure {
         return qchatUpdateStructService.getQtalk(clientUserInfoVersion, domain);
     }
 
+    /**
+     * 根据用户所属角色，过滤可以访问的组织机构成员信息
+     * 管理员可以访问所有成员
+     * 其他角色只能访问userRole为admin(管理员)和srv(客服)的成员
+     * @param request
+     * @param param
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getUpdateUsersByUserRole.qunar", method = RequestMethod.POST)
+    public JsonResult<?> getUpdateUsersByUserRole(HttpServletRequest request, @RequestBody String param) {
+        Map<String, Object> qckey = CookieUtils.getUserbyCookie(request);
+        String domain = (String) qckey.get("d");
+        if (Strings.isNullOrEmpty(domain)) {
+            return JsonResultUtils.fail(1, "请指定域");
+        }
+        JSONObject receivedParam = JSON.parseObject(param);
+        Integer clientUserInfoVersion = (Integer) receivedParam.get("version");
+        if (clientUserInfoVersion == null || clientUserInfoVersion < 0) {
+            return JsonResultUtils.fail(1, "无效version");
+        }
+        LOGGER.info("get the users info the client users info version is：{},domain is：{}", clientUserInfoVersion, domain);
+        return qchatUpdateStructService.getQtalk(clientUserInfoVersion, domain);
+    }
+
 
     @ResponseBody
     @RequestMapping(value = "/triggerNotify.qunar", method = RequestMethod.POST)

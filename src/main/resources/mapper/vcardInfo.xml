@@ -27,7 +27,8 @@
 
     <select id="selectByUsernameAndHost" resultMap="VCardVersionResultMap">
         select
-            v.id, v.username,u.user_name as nickname, v.version, v.url, v.uin, v.profile_version, v.mood, v.gender, v.host
+            v.id, v.username,u.user_name as nickname, v.version, v.url, v.uin, v.profile_version, v.mood, v.gender, v.host,
+            u.tel,u.email
         from vcard_version v,
              host_users u
         where v.username = #{username}

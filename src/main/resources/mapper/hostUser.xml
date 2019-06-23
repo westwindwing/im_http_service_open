@@ -48,12 +48,36 @@
         user_id, user_name, department, pinyin, version, user_type, hire_flag
     </sql>
 
+    <sql id="column_host_user">
+        user_id, user_name, department, tel,email
+    </sql>
+
     <select id="selectIncrementByVersion" resultMap="HostUserForVersion">
         select <include refid="column_version"/> from ${table} where version > ${version} and host_id = #{hostId}
     </select>
 
     <select id="selectMaxVersion" resultType="int">
         select max(version) from ${table}
+    </select>
+
+    <select id="getHostUser" resultMap="HostUserModel">
+        select <include refid="column_host_user"/> from ${table} where user_id = #{userId} and host_id=#{hostId}
+    </select>
+
+    <select id="updateHostUser" resultType="com.qunar.qchat.dao.model.Profile">
+        update ${table}
+        <set>
+            <if test="userName != null and userName != ''">
+                user_name = #{userName},
+            </if>
+            <if test="tel != null and tel != ''">
+                tel = #{tel},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+        </set>
+        where user_id= #{userId} and host_id = #{hostId}
     </select>
 
 </mapper>

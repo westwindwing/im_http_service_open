@@ -7,9 +7,15 @@ import com.qunar.qchat.dao.IHostInfoDao;
 import com.qunar.qchat.dao.IHostUserDao;
 import com.qunar.qchat.dao.model.HostInfoModel;
 import com.qunar.qchat.dao.model.HostUserModel;
+import com.qunar.qchat.dao.model.VCardInfoModel;
 import com.qunar.qchat.model.JsonResult;
+import com.qunar.qchat.model.request.GetVCardInfoRequest;
 import com.qunar.qchat.model.request.IncreUsersRequest;
+import com.qunar.qchat.model.request.SaveHostUsersRequest;
+import com.qunar.qchat.model.result.GetVCardInfoResult;
+import com.qunar.qchat.model.result.SaveHostUserResult;
 import com.qunar.qchat.utils.JsonResultUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +63,7 @@ public class QHostUserController {
 
             String tableName = TableConstants.TABLE_HOSTUSERS;
             Integer version = request.getVersion();
-            String domain = request.getDomain();
+            final String domain = request.getDomain();
 
             Integer maxVersion = hostUserDao.selectMaxVersion(tableName);
 
@@ -90,6 +96,63 @@ public class QHostUserController {
         }
     }
 
+    /**
+     * 保存用户信息
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/save_host_user.qunar", method = RequestMethod.POST)
+    public JsonResult<?> saveHostUser(@RequestBody SaveHostUsersRequest request) {
+        try {
+            if (Objects.isNull(request) || !request.isRequestValid()) {
+                return JsonResultUtils.fail(1, "参数错误");
+            }
+
+            //不支持QChat访问
+            if (QChatConstant.ENVIRONMENT_QCHAT.equals(Config.CURRENT_ENV)) {
+                return JsonResultUtils.fail(1, "不支持的操作");
+            }
+
+            //拆分userId和domain
+            String userId = request.getUserId().substring(0,request.getUserId().indexOf("@"));
+            String domain = request.getUserId().substring(request.getUserId().indexOf("@")+1,request.getUserId().length());
+
+
+            //查询host信息
+            HostInfoModel hostInfoModel = hostInfoDao.selectHostInfoByHostName(domain);
+
+            if (Objects.isNull(hostInfoModel)) {
+                return JsonResultUtils.fail(1, "domain [" + domain + "] 不存在");
+            }
+
+            String tableName = TableConstants.TABLE_HOSTUSERS;
+            String name = request.getName();
+            String tel = request.getTel();
+            String email = request.getEmail();
+
+            HostUserModel hostUserModel = hostUserDao.getHostUser(tableName,userId,hostInfoModel.getId());
+            SaveHostUserResult result = new SaveHostUserResult();
+
+            if(hostUserModel == null){
+                throw new Exception("未查询到用户");
+            }
+            else{
+                result.setUserId(userId);
+                result.setDomain(domain);
+                result.setName(request.getName() == null?hostUserModel.getUserName():request.getName());
+                result.setTel(request.getTel() == null?hostUserModel.getTel():request.getTel());
+                result.setEmail(request.getEmail() == null?hostUserModel.getEmail():request.getEmail());
+                //修改
+                hostUserDao.updateHostUser(tableName, userId, hostInfoModel.getId(), name, tel, email);
+            }
+
+            return JsonResultUtils.success(result);
+
+        } catch (Exception ex) {
+            LOGGER.error("catch error {}", ex);
+            return JsonResultUtils.fail(0, "服务器异常：" + ExceptionUtils.getStackTrace(ex));
+        }
+    }
 
     /**
      * [{"domain":"ejabhost1","users":[{"user":"malin.ma","version":0}]}]

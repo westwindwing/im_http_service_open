@@ -564,11 +564,17 @@
                 <env.resources>src/main/env_resources/prod</env.resources>
             </properties>
         </profile>
+        <profile>
+            <id>prod-kh1</id>
+            <properties>
+                <env.resources>src/main/env_resources/prod-kh1</env.resources>
+            </properties>
+        </profile>
     </profiles>
 
     <build>
         <defaultGoal>package</defaultGoal>
-        <finalName>im_http_service_open</finalName>
+        <finalName>im_http_service</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>

@@ -1,8 +1,5 @@
 package com.qunar.qchat.constants;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Created by yinmengwang on 17-5-19.
  */
@@ -68,6 +65,4 @@ public interface QChatConstant {
 
     String SERVER_ERROR = "服务器异常";
     String PARAMETER_ERROR = "参数错误";
-
-    List<String> NUMBER_LIST = Arrays.asList("1","2","3","4","5","6","7","8","9","0");
 }

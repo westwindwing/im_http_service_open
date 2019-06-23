@@ -3,7 +3,6 @@ package com.qunar.qchat.controller;
 import com.alibaba.fastjson.JSON;
 import com.qunar.qchat.constants.Config;
 import com.qunar.qchat.constants.QChatConstant;
-import com.qunar.qchat.dao.IFloginUserDao;
 import com.qunar.qchat.dao.IVCardInfoDao;
 import com.qunar.qchat.dao.model.VCardInfoModel;
 import com.qunar.qchat.model.JsonResult;
@@ -45,8 +44,6 @@ public class QDomainController {
 
     @Autowired
     private IVCardInfoDao vCardInfoDao;
-    @Autowired
-    private IFloginUserDao floginUserDao;
 
     @RequestMapping(value = "/get_user_status.qunar", method = RequestMethod.POST)
     public JsonResult<?> getUserStatus(@RequestBody GetUserStatusRequest request) {
@@ -59,42 +56,10 @@ public class QDomainController {
                 return JsonResultUtils.fail(1, "参数错误");
             }
 
-            List<String> originUsers = new ArrayList<>(request.getUsers());
             List<Map<String, Object>> resultData = new ArrayList<>();
             List<Map<String, String>> userStatus = new ArrayList<>();
             Map<String, Object> rowData = new HashMap<>();
-
-            /** 处理机器人用户 */
-            long step1StartTime = System.currentTimeMillis();
-            List<String> floginUsers = floginUserDao.selectFloginUserNames();
-            if(CollectionUtils.isNotEmpty(floginUsers)) {
-
-                if(CollectionUtils.isNotEmpty(originUsers)) {
-
-                    /** 获取当前domain */
-                    String firstUserId = originUsers.get(0);
-                    if(StringUtils.isBlank(firstUserId) ||
-                            firstUserId.indexOf("@") == -1) {
-                        return JsonResultUtils.fail(1, "参数错误");
-                    }
-                    String domain = firstUserId.split("@")[1];
-                    //加上了domian 后的 flogin users
-                    //List<String> processedFloginUsers = new ArrayList<>(floginUsers.size());
-                    for(String floginUserId : floginUsers) {
-                        String processedFloginUserId = floginUserId + "@" + domain;
-                        //processedFloginUsers.add(processedFloginUserId);
-                        if(originUsers.contains(processedFloginUserId)) {
-                            Map<String, String> currentUserStatus = new HashMap<>();
-                            currentUserStatus.put("u", StringUtils.defaultString(processedFloginUserId, ""));
-                            currentUserStatus.put("o", "online");
-                            userStatus.add(currentUserStatus);
-                            originUsers.remove(processedFloginUserId);
-                        }
-                    }
-                }
-            }
-
-            for(String key : originUsers) {
+            for(String key : request.getUsers()) {
 
                 if(StringUtils.isBlank(key) ||
                         key.indexOf("@") == -1) {
@@ -148,6 +113,52 @@ public class QDomainController {
         }
     }
 
+    /**
+     * 获取用户信息,单个
+     * @param userId
+     * @return  JsonResult<?>
+     * */
+    @RequestMapping(value = "/get_vcard_info_one.qunar", method = RequestMethod.POST)
+    public JsonResult<?> getVCardInfoOne(@RequestBody String userId) {
+        try {
+            if (StringUtils.isEmpty(userId)) {
+                return JsonResultUtils.fail(1, QChatConstant.PARAMETER_ERROR);
+            }
+            String username = userId.substring(0,userId.indexOf("@"));
+            String domain = userId.substring(userId.indexOf("@")+1,userId.length());
+
+            Integer count = vCardInfoDao.getCountByUsernameAndHost(username, domain);
+            if (count > 0) {
+                VCardInfoModel result = vCardInfoDao.selectByUsernameAndHost(username,domain, 0);
+                if(Objects.nonNull(result)) {
+                    GetVCardInfoResult resultBean = new GetVCardInfoResult();
+                    resultBean.setType("");
+                    resultBean.setLoginName(StringUtils.defaultString(username, ""));
+                    resultBean.setEmail("");
+                    resultBean.setGender(StringUtils.defaultString(String.valueOf(result.getGender()), ""));
+                    resultBean.setNickname(StringUtils.defaultString(result.getNickname(), ""));
+                    resultBean.setWebname(StringUtils.defaultString(result.getNickname(), ""));
+                    resultBean.setV(StringUtils.defaultString(String.valueOf(result.getVersion()), ""));
+                    resultBean.setImageurl(Objects.isNull(result.getUrl()) ?
+                            getImageUrl(String.valueOf(result.getGender()))
+                            : result.getUrl());
+                    resultBean.setUid("0");
+                    resultBean.setUsername(StringUtils.defaultString(result.getNickname(), ""));
+                    resultBean.setDomain(domain);
+                    resultBean.setCommenturl(QChatConstant.VCARD_COMMON_URL);
+                    resultBean.setMood(StringUtils.defaultString(result.getMood(), ""));
+                    resultBean.setEmail(result.getEmail());
+                    resultBean.setTel(result.getTel());
+                    return JsonResultUtils.success(resultBean);
+                }
+            }
+            return JsonResultUtils.fail(0, "未查询到数据");
+
+        }catch (Exception ex) {
+            LOGGER.error("catch error : {}", ExceptionUtils.getStackTrace(ex));
+            return JsonResultUtils.fail(0, QChatConstant.SERVER_ERROR);
+        }
+    }
 
 
     /**
@@ -196,6 +207,8 @@ public class QDomainController {
                             resultBean.setDomain(request.getDomain());
                             resultBean.setCommenturl(QChatConstant.VCARD_COMMON_URL);
                             resultBean.setMood(StringUtils.defaultString(result.getMood(), ""));
+                            resultBean.setEmail(result.getEmail());
+                            resultBean.setTel(result.getTel());
                             users.add(resultBean);
                         }
                     }
@@ -218,15 +231,20 @@ public class QDomainController {
         }
 
         for(GetVCardInfoRequest request : requests) {
-            if(StringUtils.isEmpty(request.getDomain())) {
-                return false;
-            }
+            return this.checkGetVcardInfoParameter(request);
+        }
+        return true;
+    }
 
-            List<GetVCardInfoRequest.UserInfo> userInfoList = request.getUsers();
-            for(GetVCardInfoRequest.UserInfo userInfo : userInfoList) {
-                if(StringUtils.isEmpty(userInfo.getUser())) {
-                    return false;
-                }
+    private boolean checkGetVcardInfoParameter(GetVCardInfoRequest request) {
+        if(StringUtils.isEmpty(request.getDomain())) {
+            return false;
+        }
+
+        List<GetVCardInfoRequest.UserInfo> userInfoList = request.getUsers();
+        for(GetVCardInfoRequest.UserInfo userInfo : userInfoList) {
+            if(StringUtils.isEmpty(userInfo.getUser())) {
+                return false;
             }
         }
         return true;

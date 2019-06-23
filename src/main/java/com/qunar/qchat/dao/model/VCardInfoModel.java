@@ -17,6 +17,9 @@ public class VCardInfoModel {
     private Integer gender;
     private String host;
 
+    private String email;
+    private String tel;
+
     public String getId() {
         return id;
     }
@@ -95,6 +98,22 @@ public class VCardInfoModel {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
     }
 
     @Override

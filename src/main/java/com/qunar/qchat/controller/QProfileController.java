@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 
-;
 
 @RequestMapping("/newapi/profile/")
 @RestController

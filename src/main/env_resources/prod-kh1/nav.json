@@ -3,28 +3,28 @@
     "loginType": "password"
   },
   "baseaddess": {
-    "simpleapiurl": "http://103.239.101.13:8080",
-    "fileurl": "http://103.239.101.13:8080",
-    "domain": "qbliao.com",
-    "javaurl": "http://103.239.101.13:8080/package",
+    "simpleapiurl": "http://103.44.28.212:8080",
+    "fileurl": "http://103.44.28.212:8080",
+    "domain": "kh1.qbliao.com",
+    "javaurl": "http://103.44.28.212:8080/package",
     "protobufPcPort": 5202,
-    "xmpp": "103.239.101.13",
+    "xmpp": "103.44.28.212",
     "xmppport": 5222,
     "protobufPort": 5202,
     "pubkey": "rsa_public_key",
     "xmppmport": 5222,
-    "httpurl": "http://103.239.101.13:8080/newapi",
-    "apiurl": "http://103.239.101.13:8080/api",
-    "shareurl":"http://103.239.101.13:8080/py/sharemsg",
-    "domainhost":"qbliao.com"
+    "httpurl": "http://103.44.28.212:8080/newapi",
+    "apiurl": "http://103.44.28.212:8080/api",
+    "shareurl":"http://103.44.28.212:8080/py/sharemsg",
+    "domainhost":"kh1.qbliao.com"
   },
   "imConfig": {
     "RsaEncodeType": 1,
     "showOrganizational": true,
-    "mail":"qbliao.com"
+    "mail":"kh1.qbliao.com"
   },
   "ability": {
-    "searchurl": "http://103.239.101.13:8080/py/search",
+    "searchurl": "http://103.44.28.212:8080/py/search",
     "showmsgstat": true
   },
   "RNAndroidAbility": {
